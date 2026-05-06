@@ -30,20 +30,17 @@ class LoginFragment : Fragment() {
         bindViews()
 
         if (UserRepository.getInstance().isLogged()) {
-            print("WWWWWWWWWOWWWW")
             findNavController().navigate(R.id.action_loginFragment_to_postsListFragment)
-//            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToPostsListFragment())
         }
 
         binding?.registerButton?.setOnClickListener {
-            print("WOWWWW")
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
-//            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment())
         }
 
         binding?.loginButton?.setOnClickListener {
             showProgressBar()
             viewModel.login({ error -> onLoginFailure(error) })
+            findNavController().navigate(R.id.action_loginFragment_to_postsListFragment)
         }
 
         return binding?.root

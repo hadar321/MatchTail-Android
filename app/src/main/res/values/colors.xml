@@ -9,5 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#D40404</color>
     <color name="pawfect_green">#8BFF52</color>
-    <color name="pawfect_white">#8BFF52</color>
+    <color name="pawfect_dark_green">#57B837</color>
+    <color name="pawfect_white">#FFFFFFFF</color>
 </resources>
