@@ -1,20 +1,9 @@
 package com.example.matchtail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
@@ -24,12 +13,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.matchtail.data.repositories.AuthListener
 import com.example.matchtail.data.repositories.UserRepository
-import com.example.matchtail.ui.theme.MatchTailTheme
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-/**
- * Project Owners: Hadar Lachmy, Tal Eyal
- */
 class MainActivity : AppCompatActivity() {
     var navController: NavController? = null
     var previousIsLogged: Boolean? = null

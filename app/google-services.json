@@ -1,15 +1,15 @@
 {
   "project_info": {
     "project_number": "339894933541",
-    "project_id": "matchtail-78aa8",
-    "storage_bucket": "matchtail-78aa8.firebasestorage.app"
+    "project_id": "pawfect-match-78aa8",
+    "storage_bucket": "pawfect-match-78aa8.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:339894933541:android:69edd1fc2dc2af3e3d07cc",
         "android_client_info": {
-          "package_name": "com.example.matchtail"
+          "package_name": "com.example.pawfectmatch"
         }
       },
       "oauth_client": [],

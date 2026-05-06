@@ -1,7 +1,16 @@
 <resources>
     <string name="app_name">MatchTail</string>
+    <string name="upload_image_text">Upload Image</string>
+    <string name="email_text">Email</string>
     <string name="email_error">Email is invalid</string>
+    <string name="password_text">Password</string>
+    <string name="old_password_text">Current Password</string>
     <string name="password_error">Password is invalid</string>
+    <string name="confirm_password_text">Confirm Password</string>
     <string name="confirm_password_error">Confirm Password is invalid</string>
+    <string name="name_text">Name</string>
     <string name="name_error">Name is invalid</string>
+    <string name="empty"> </string>
+    <string name="save_changes">Save Changes</string>
+    <string name="log_in">Log In</string>
 </resources>

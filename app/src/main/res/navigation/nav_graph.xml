@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/postsListFragment"
-        android:name="com.example.matchtail.fragments.user.ProfileFragment"
+        android:name="com.example.matchtail.fragments.post.PostsListFragment"
         android:label="fragment_posts_list" />
     <fragment
         android:id="@+id/loginFragment"
@@ -27,4 +27,16 @@
             android:id="@+id/action_registerFragment_to_postsListFragment"
             app:destination="@id/postsListFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.matchtail.fragments.user.ProfileFragment"
+        android:label="fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_editUserFragment"
+            app:destination="@id/editUserFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editUserFragment"
+        android:name="com.example.matchtail.fragments.user.edit.EditUserFragment"
+        android:label="fragment_edit_user" />
 </navigation>

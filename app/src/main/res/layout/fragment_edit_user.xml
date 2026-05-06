@@ -2,13 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".fragments.register.RegisterFragment">
+    tools:context=".fragments.editUser.EditUserFragment">
 
     <data>
 
         <variable
             name="viewModel"
-            type="com.example.matchtail.fragments.register.RegisterViewModel" />
+            type="com.example.matchtail.fragments.user.edit.EditUserViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,7 +17,7 @@
         tools:ignore="ScrollViewSize">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/login_toolbar"
+            android:id="@+id/edit_user_toolbar"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/pawfect_green"
@@ -33,13 +33,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="MatchTail"
-                android:textColor="@color/white"
+                android:textColor="@color/pawfect_white"
                 android:textSize="25sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
 
         </androidx.appcompat.widget.Toolbar>
 
-        <androidx.core.widget.NestedScrollView
+        <ScrollView
             android:id="@+id/scroll_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -47,69 +48,51 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/login_toolbar">
+            app:layout_constraintTop_toBottomOf="@id/edit_user_toolbar">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:ignore="ScrollViewSize">
 
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Register"
-                    android:textColor="@color/black"
-                    android:textSize="50sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@id/register_inputs"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <LinearLayout
-                    android:id="@+id/register_inputs"
+                    android:id="@+id/inputs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toTopOf="@id/progress_bar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/title">
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <EditText
+                    <com.example.matchtail.views.EditTextInput
                         android:id="@+id/name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="64dp"
                         android:layout_marginEnd="64dp"
-                        android:autofillHints="true"
                         android:ems="10"
-                        android:hint="Name"
+                        android:hint="@string/name_text"
                         android:text="@={viewModel.name}"
-                        />
-<!--                        app:helperText="@{ viewModel.isNameValid() ? null : @string/name_error}"-->
-<!--                        app:helperTextEnabled="@{!viewModel.isNameValid()}"-->
-<!--                        app:helperTextTextColor="@color/red" />-->
+                        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+                        app:helperText="@{ viewModel.isNameValid() ? null : @string/name_error}"
+                        app:helperTextEnabled="@{!viewModel.isNameValid()}"
+                        app:helperTextTextColor="@color/design_default_color_error" />
 
-                    <EditText
-                        android:id="@+id/email"
+                    <com.example.matchtail.views.EditTextInput
+                        android:id="@+id/old_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="64dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginEnd="64dp"
                         android:ems="10"
-                        android:hint="Email"
-                        android:inputType="textEmailAddress"
-                        android:text="@={viewModel.email}"
-                        />
-<!--                        app:helperText="@{ viewModel.isEmailValid() ? null : @string/email_error}"-->
-<!--                        app:helperTextEnabled="@{!viewModel.isEmailValid()}"-->
-<!--                        app:helperTextTextColor="@color/red" />-->
+                        android:hint="@string/old_password_text"
+                        android:inputType="textPassword"
+                        android:text="@={viewModel.oldPassword}"
+                        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
 
-                    <EditText
+                    <com.example.matchtail.views.EditTextInput
                         android:id="@+id/password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -117,15 +100,15 @@
                         android:layout_marginTop="20dp"
                         android:layout_marginEnd="64dp"
                         android:ems="10"
-                        android:hint="Password"
+                        android:hint="@string/password_text"
                         android:inputType="textPassword"
                         android:text="@={viewModel.password}"
-                        />
-<!--                        app:helperText="@{viewModel.isPasswordValid() ? null :@string/password_error}"-->
-<!--                        app:helperTextEnabled="@{!viewModel.isPasswordValid()}"-->
-<!--                        app:helperTextTextColor="@color/design_default_color_error" />-->
+                        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+                        app:helperText="@{viewModel.isPasswordValid() ? null :@string/password_error}"
+                        app:helperTextEnabled="@{!viewModel.isPasswordValid()}"
+                        app:helperTextTextColor="@color/design_default_color_error" />
 
-                    <EditText
+                    <com.example.matchtail.views.EditTextInput
                         android:id="@+id/confirm_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -133,12 +116,13 @@
                         android:layout_marginTop="20dp"
                         android:layout_marginEnd="64dp"
                         android:ems="10"
-                        android:hint="Confirm Password"
+                        android:hint="@string/confirm_password_text"
                         android:inputType="textPassword"
-                        android:text="@={viewModel.confirmPassword}"/>
-<!--                        app:helperText="@{viewModel.isConfirmPasswordValid() ? null :@string/confirm_password_error}"-->
-<!--                        app:helperTextEnabled="@{!viewModel.isConfirmPasswordValid()}"-->
-<!--                        app:helperTextTextColor="@color/design_default_color_error" />-->
+                        android:text="@={viewModel.confirmPassword}"
+                        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+                        app:helperText="@{viewModel.isConfirmPasswordValid() ? null :@string/confirm_password_error}"
+                        app:helperTextEnabled="@{!viewModel.isConfirmPasswordValid()}"
+                        app:helperTextTextColor="@color/design_default_color_error" />
 
                     <com.example.matchtail.views.ImagePicker
                         android:id="@+id/image_view"
@@ -146,28 +130,28 @@
                         android:layout_height="150sp"
                         android:layout_gravity="center"
                         android:layout_marginTop="20dp"
-                        android:contentDescription="Upload Image"
-                        android:src="@drawable/add_picture"
-                        tools:ignore="HardcodedText" />
+                        android:contentDescription="@string/upload_image_text"
+                        android:src="@drawable/add_picture" />
 
                 </LinearLayout>
 
+
                 <android.widget.Button
-                    android:id="@+id/register_button"
+                    android:id="@+id/submit_button"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
-                    android:layout_marginTop="4dp"
-                    android:background="@color/teal_200"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/pawfect_dark_green"
                     android:paddingStart="30dp"
                     android:paddingEnd="30dp"
-                    android:text="Sign Up"
-                    android:textAllCaps="false"
+                    android:text="@string/save_changes"
                     android:textColor="@color/white"
                     android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/inputs"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/register_inputs" />
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <com.google.android.material.progressindicator.CircularProgressIndicator
                     android:id="@+id/progress_bar"
@@ -180,10 +164,12 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/register_inputs" />
+                    app:layout_constraintTop_toBottomOf="@id/inputs" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.core.widget.NestedScrollView>
+        </ScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

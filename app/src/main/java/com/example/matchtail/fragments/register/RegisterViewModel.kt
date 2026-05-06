@@ -48,9 +48,7 @@ class RegisterViewModel : ViewModel() {
                     val name = name.value ?: throw Exception("Name is required")
                     val avatarUri = avatarUri.value ?: throw Exception("Avatar is required")
 
-                    Log.d("BBDDD","BBBDDD")
                     UserRepository.getInstance().create(email, password, name, avatarUri)
-                    Log.d("BBDDD","BBBDDDEEEE")
                 } catch (e: Exception) {
                     Log.e("Register", "Error registering user", e)
                     withContext(Dispatchers.Main) { onFailure(e) }

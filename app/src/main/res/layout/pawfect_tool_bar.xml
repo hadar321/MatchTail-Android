@@ -19,7 +19,7 @@
         android:layout_gravity="center"
         android:shadowDx="2"
         android:shadowDy="2"
-        android:text="Pawfect Match"
+        android:text="MatchTail"
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"
