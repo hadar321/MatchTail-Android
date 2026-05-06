@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/app_toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:background="@color/pawfect_green"
+    android:minHeight="?android:attr/actionBarSize"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="1.0"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+
+    <TextView
+        android:id="@+id/toolbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:text="Pawfect Match"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/app_toolbar"
+        app:layout_constraintTop_toTopOf="@id/app_toolbar" />
+</androidx.appcompat.widget.Toolbar>

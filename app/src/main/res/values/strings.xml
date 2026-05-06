@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MatchTail</string>
+    <string name="email_error">Email is invalid</string>
+    <string name="password_error">Password is invalid</string>
+    <string name="confirm_password_error">Confirm Password is invalid</string>
+    <string name="name_error">Name is invalid</string>
 </resources>
