@@ -4,7 +4,7 @@
     android:id="@+id/app_toolbar"
     android:layout_width="match_parent"
     android:layout_height="0dp"
-    android:background="@color/pawfect_green"
+    android:background="@color/matchtail_green"
     android:minHeight="?android:attr/actionBarSize"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="1.0"

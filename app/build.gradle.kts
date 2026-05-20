@@ -1,10 +1,10 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-    id("androidx.navigation.safeargs.kotlin")
-    id("com.google.gms.google-services")
-    id("kotlin-kapt")
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kotlinCompose)
+    alias(libs.plugins.kotlinKapt)
+    alias(libs.plugins.navigationSafeargs)
+    alias(libs.plugins.googleServices)
 }
 
 android {
@@ -12,9 +12,9 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.pawfectmatch"
+        applicationId = "com.example.matchtail"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -72,6 +72,11 @@ dependencies {
     implementation(libs.material)
     implementation(libs.glide)
     implementation(libs.ucrop)
+    
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
     testImplementation(libs.junit)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

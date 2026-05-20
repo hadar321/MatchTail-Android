@@ -20,7 +20,7 @@
             android:id="@+id/edit_user_toolbar"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/pawfect_green"
+            android:background="@color/matchtail_green"
             android:minHeight="?android:attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,8 +33,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="MatchTail"
-                android:textColor="@color/pawfect_white"
-                android:textSize="25sp"
+                android:textColor="@color/matchtail_white"
+                android:textSize="30sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
@@ -142,7 +142,7 @@
                     android:layout_height="35dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/pawfect_dark_green"
+                    android:background="@color/matchtail_dark_green"
                     android:paddingStart="30dp"
                     android:paddingEnd="30dp"
                     android:text="@string/save_changes"

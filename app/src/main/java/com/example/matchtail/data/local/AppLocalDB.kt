@@ -23,7 +23,8 @@ import com.example.matchtail.data.models.User
 @Database(
     entities = [User::class, Image::class, Post::class, Animal::class, Comment::class],
     views = [InflatedPost::class, InflatedComment::class],
-    version = 8
+    version = 9,
+    exportSchema = true
 )
 abstract class AppLocalDbRepository : RoomDatabase() {
     abstract fun userDao(): UserDAO

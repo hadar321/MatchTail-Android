@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import com.example.matchtail.App
 import com.example.matchtail.data.local.AppLocalDB
 import com.example.matchtail.data.models.User
+import com.example.matchtail.utils.ImageLoader
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
@@ -90,7 +91,7 @@ class UserRepository : ImageLoader {
 
         db.runBatch { batch ->
             batch.set(documentRef, user)
-            batch.update(documentRef, User.IMAGE_URI_KEY, null)
+            batch.update(documentRef, User.IMAGE_URI_KEY, user.avatarUrl)
             batch.update(documentRef, User.TIMESTAMP_KEY, FieldValue.serverTimestamp())
         }.await()
 
@@ -204,9 +205,4 @@ class UserRepository : ImageLoader {
         App.context.getSharedPreferences("TAG", Context.MODE_PRIVATE)
             .edit().putLong(LAST_UPDATED, time).apply()
     }
-}
-
-// TODO: extract
-interface ImageLoader {
-    suspend fun getImagePath(imageId: String): String
 }

@@ -6,9 +6,10 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="gray">#4c4c4c</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#D40404</color>
-    <color name="pawfect_green">#8BFF52</color>
-    <color name="pawfect_dark_green">#57B837</color>
-    <color name="pawfect_white">#FFFFFFFF</color>
+    <color name="matchtail_green">#8BFF52</color>
+    <color name="matchtail_dark_green">#57B837</color>
+    <color name="matchtail_white">#FFFFFFFF</color>
 </resources>

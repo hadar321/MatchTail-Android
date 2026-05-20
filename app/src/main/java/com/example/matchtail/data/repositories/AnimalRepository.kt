@@ -35,13 +35,13 @@ class AnimalRepository {
         transaction.update(documentRef, Animal.TIMESTAMP_KEY, FieldValue.serverTimestamp())
     }
 
-    fun save(restaurantId: String, transaction: Transaction) {
-        val documentRef = db.collection(COLLECTION).document(restaurantId)
+    fun save(animalId: String, transaction: Transaction) {
+        val documentRef = db.collection(COLLECTION).document(animalId)
         transaction.update(documentRef, Animal.TIMESTAMP_KEY, FieldValue.serverTimestamp())
     }
 
-    fun getByIdLiveData(restaurantId: String): LiveData<Animal> {
-        return AppLocalDB.getInstance().animalDao().getByIdLiveData(restaurantId)
+    fun getByIdLiveData(animalId: String): LiveData<Animal> {
+        return AppLocalDB.getInstance().animalDao().getByIdLiveData(animalId)
     }
 
     suspend fun getById(animalId: String): Animal? {

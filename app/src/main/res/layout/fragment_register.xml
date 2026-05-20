@@ -20,7 +20,7 @@
             android:id="@+id/login_toolbar"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/pawfect_green"
+            android:background="@color/bottom_nav_color"
             android:minHeight="?android:attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +34,7 @@
                 android:layout_gravity="center"
                 android:text="MatchTail"
                 android:textColor="@color/white"
-                android:textSize="25sp"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
         </androidx.appcompat.widget.Toolbar>
@@ -89,9 +89,6 @@
                         android:hint="Name"
                         android:text="@={viewModel.name}"
                         />
-<!--                        app:helperText="@{ viewModel.isNameValid() ? null : @string/name_error}"-->
-<!--                        app:helperTextEnabled="@{!viewModel.isNameValid()}"-->
-<!--                        app:helperTextTextColor="@color/red" />-->
 
                     <EditText
                         android:id="@+id/email"
@@ -105,9 +102,6 @@
                         android:inputType="textEmailAddress"
                         android:text="@={viewModel.email}"
                         />
-<!--                        app:helperText="@{ viewModel.isEmailValid() ? null : @string/email_error}"-->
-<!--                        app:helperTextEnabled="@{!viewModel.isEmailValid()}"-->
-<!--                        app:helperTextTextColor="@color/red" />-->
 
                     <EditText
                         android:id="@+id/password"
@@ -121,9 +115,6 @@
                         android:inputType="textPassword"
                         android:text="@={viewModel.password}"
                         />
-<!--                        app:helperText="@{viewModel.isPasswordValid() ? null :@string/password_error}"-->
-<!--                        app:helperTextEnabled="@{!viewModel.isPasswordValid()}"-->
-<!--                        app:helperTextTextColor="@color/design_default_color_error" />-->
 
                     <EditText
                         android:id="@+id/confirm_password"
@@ -136,9 +127,6 @@
                         android:hint="Confirm Password"
                         android:inputType="textPassword"
                         android:text="@={viewModel.confirmPassword}"/>
-<!--                        app:helperText="@{viewModel.isConfirmPasswordValid() ? null :@string/confirm_password_error}"-->
-<!--                        app:helperTextEnabled="@{!viewModel.isConfirmPasswordValid()}"-->
-<!--                        app:helperTextTextColor="@color/design_default_color_error" />-->
 
                     <com.example.matchtail.views.ImagePicker
                         android:id="@+id/image_view"
@@ -157,7 +145,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:layout_marginTop="4dp"
-                    android:background="@color/teal_200"
                     android:paddingStart="30dp"
                     android:paddingEnd="30dp"
                     android:text="Sign Up"

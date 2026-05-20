@@ -39,4 +39,26 @@
         android:id="@+id/editUserFragment"
         android:name="com.example.matchtail.fragments.user.edit.EditUserFragment"
         android:label="fragment_edit_user" />
+    <fragment
+        android:id="@+id/postFormFragment"
+        android:name="com.example.matchtail.fragments.post.PostFormFragment"
+        android:label="fragment_post_form">
+        <argument
+            android:name="postId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/userPageFragment"
+        android:name="com.example.matchtail.fragments.user.UserPageFragment"
+        android:label="fragment_user_page">
+        <argument
+            android:name="userId"
+            app:argType="string" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_userPageFragment"
+        app:destination="@id/userPageFragment"
+        app:popUpToInclusive="true" />
 </navigation>

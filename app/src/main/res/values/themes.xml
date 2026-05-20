@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.MatchTail" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Use Theme.AppCompat.Light.NoActionBar or a MaterialComponents variant to support AppCompatActivity -->
+    <style name="Theme.MatchTail" parent="Theme.AppCompat.Light.NoActionBar" />
 </resources>

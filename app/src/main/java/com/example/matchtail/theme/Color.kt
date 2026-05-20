@@ -1,4 +1,4 @@
-package com.example.matchtail.ui.theme
+package com.example.matchtail.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -15,5 +15,5 @@ interface InflatedPostDAO {
 
     @Query("SELECT * FROM inflatedPosts WHERE animalId = :id AND userId = :loggedUserId " +
             "UNION SELECT * FROM inflatedPosts WHERE animalId = :id AND userId != :loggedUserId")
-    fun getByRestaurantId(id: String, loggedUserId: String): LiveData<List<InflatedPost>>
+    fun getByAnimalId(id: String, loggedUserId: String): LiveData<List<InflatedPost>>
 }
