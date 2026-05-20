@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "339894933541",
-    "project_id": "matchtail-78aa8",
-    "storage_bucket": "matchtail-78aa8.firebasestorage.app"
+    "project_number": "227463258771",
+    "project_id": "matchtail-5251a",
+    "storage_bucket": "matchtail-5251a.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:339894933541:android:69edd1fc2dc2af3e3d07cc",
+        "mobilesdk_app_id": "1:227463258771:android:e9589daaee1f9b0f2c2366",
         "android_client_info": {
-          "package_name": "com.example.matchtail"
+          "package_name": "matchtail.app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDthwrSjPwaNrHgMtWiBuV--hPItVbQUbU"
+          "current_key": "AIzaSyCmHVrSt-X7cJz08IfPRW4MfBptHSVRMzY"
         }
       ],
       "services": {
