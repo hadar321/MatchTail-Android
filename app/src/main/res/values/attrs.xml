@@ -1,0 +1,11 @@
+<resources>
+    <declare-styleable name="EditTextInput">
+        <attr name="android:hint" format="string" />
+        <attr name="helperText" format="string" />
+        <attr name="android:text" format="string" />
+        <attr name="helperTextColor" format="color" />
+        <attr name="helperTextEnabled" format="boolean" />
+        <attr name="android:inputType" format="flags" />
+        <attr name="android:lines" format="integer" />
+    </declare-styleable>
+</resources>

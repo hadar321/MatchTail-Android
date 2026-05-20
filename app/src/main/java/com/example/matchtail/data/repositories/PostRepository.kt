@@ -5,8 +5,8 @@ import android.content.SharedPreferences
 import androidx.core.net.toUri
 import com.example.matchtail.App
 import com.example.matchtail.data.local.AppLocalDB
-import com.example.matchtail.data.models.Animal
 import com.example.matchtail.data.models.Post
+import com.example.matchtail.utils.ImageLoader
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,7 +15,7 @@ import kotlinx.coroutines.tasks.await
 import java.util.Date
 import java.util.concurrent.Executors
 
-class PostRepository: ImageLoader {
+class PostRepository : ImageLoader {
     companion object {
         private const val COLLECTION = "posts"
         private const val LAST_UPDATED = "postsLastUpdated"
@@ -31,7 +31,7 @@ class PostRepository: ImageLoader {
     private val imageRepository = ImageRepository(COLLECTION)
     private val executor = Executors.newSingleThreadExecutor()
 
-    suspend fun save(post: Post, animal: Animal?) {
+    suspend fun save(post: Post) {
         val isOldPost = post.id.isNotEmpty()
         val documentRef = if (isOldPost)
             db.collection(COLLECTION).document(post.id)
@@ -39,12 +39,8 @@ class PostRepository: ImageLoader {
             db.collection(COLLECTION).document().also { post.id = it.id }
 
         db.runTransaction { transaction ->
-            if (isOldPost) {
-                val postDB = transaction.get(documentRef)
-            }
-
             transaction.set(documentRef, post)
-            transaction.update(documentRef, Post.IMAGE_URI_KEY, null)
+            transaction.update(documentRef, Post.IMAGE_URI_KEY, post.animalPictureUrl)
             transaction.update(documentRef, Post.TIMESTAMP_KEY, FieldValue.serverTimestamp())
         }.await()
         uploadImage(post.animalPictureUrl, post.id)
@@ -84,13 +80,13 @@ class PostRepository: ImageLoader {
         return imageRepository.getImagePathById(imageId)
     }
 
-    suspend fun getByRestaurantIdAndUserId(restaurantId: String, userId: String): Post? {
+    suspend fun getByAnimalIdAndUserId(animalId: String, userId: String): Post? {
         var post =
-            AppLocalDB.getInstance().postDao().getByRestaurantIdAndUserId(restaurantId, userId)
+            AppLocalDB.getInstance().postDao().getByAnimalIdAndUserId(animalId, userId)
 
         if (post == null) {
             val posts = db.collection(COLLECTION)
-                .whereEqualTo(Post.ANIMAL_ID_KEY, restaurantId)
+                .whereEqualTo(Post.ANIMAL_ID_KEY, animalId)
                 .whereEqualTo(Post.USER_ID_KEY, userId)
                 .get()
                 .await().documents.map { document ->

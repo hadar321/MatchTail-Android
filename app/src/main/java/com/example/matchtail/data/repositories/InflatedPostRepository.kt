@@ -38,10 +38,10 @@ class InflatedPostRepository {
         return AppLocalDB.getInstance().inflatedPostDao().getByUserId(userId)
     }
 
-    fun getByRestaurantId(restaurantId: String): LiveData<List<InflatedPost>> {
+    fun getByAnimalId(animalId: String): LiveData<List<InflatedPost>> {
         refresh()
         val loggedUserId = UserRepository.getInstance().getLoggedUserId() ?: throw Exception("User not logged in")
-        return AppLocalDB.getInstance().inflatedPostDao().getByRestaurantId(restaurantId, loggedUserId)
+        return AppLocalDB.getInstance().inflatedPostDao().getByAnimalId(animalId, loggedUserId)
     }
 
     fun getIsLoading(): LiveData<Boolean> {

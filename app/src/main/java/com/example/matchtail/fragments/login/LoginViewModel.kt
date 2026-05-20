@@ -41,7 +41,6 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    //
     private fun validateForm() {
         isEmailValid.value = validator.validateEmail(email.value)
         isPasswordValid.value = validator.validatePassword(password.value)

@@ -10,7 +10,7 @@ import com.example.matchtail.data.models.Animal
 @Dao
 interface AnimalDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(vararg restaurant: Animal)
+    fun insertAll(vararg animal: Animal)
 
     @Query("SELECT * FROM animals WHERE id = :animalId")
     fun getById(animalId: String): Animal?

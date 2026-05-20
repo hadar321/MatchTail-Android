@@ -21,7 +21,7 @@ data class Post (
         internal const val ANIMAL_ID_KEY = "animalId"
         private const val CONTENT_KEY = "content"
         internal const val IMAGE_URI_KEY = "animalPictureUrl"
-        private const val ADOPTING_KEY = "isAdopt"
+        private const val ADOPTING_KEY = "adopt"
         internal const val TIMESTAMP_KEY = "lastUpdated"
 
         fun fromJSON(json: Map<String, Any>): Post {

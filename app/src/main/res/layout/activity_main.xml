@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <include layout="@layout/pawfect_tool_bar"/>
+    <include layout="@layout/matchtail_tool_bar"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_nav_host"

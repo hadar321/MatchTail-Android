@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import com.example.matchtail.App
 import com.example.matchtail.data.local.AppLocalDB
 import com.example.matchtail.data.models.User
+import com.example.matchtail.utils.ImageLoader
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
@@ -25,7 +26,7 @@ interface AuthListener {
 
 class UserRepository : ImageLoader {
     companion object {
-        private const val COLLECTION = "users"
+        private const val IMAGE_COLLECTION = "users"
         private const val LAST_UPDATED = "usersLastUpdated"
 
         private val userRepository = UserRepository()
@@ -37,7 +38,7 @@ class UserRepository : ImageLoader {
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val imageRepository = ImageRepository(COLLECTION)
+    private val imageRepository = ImageRepository(IMAGE_COLLECTION)
     private val authListeners: MutableList<AuthListener> = mutableListOf()
     private var isInUserCreation: Boolean = false
 
@@ -68,8 +69,8 @@ class UserRepository : ImageLoader {
                 throw AuthenticatorException("Old password is required")
             }
 
-            val loggedUserId = getLoggedUserId() ?: throw Exception("User not logged in")
-            auth.signInWithEmailAndPassword(loggedUserId, oldPassword).await()
+            val loggedUserEmail = getLoggedUserEmail() ?: throw Exception("User not logged in")
+            auth.signInWithEmailAndPassword(loggedUserEmail, oldPassword).await()
             auth.currentUser?.updatePassword(password)?.await()
         }
 
@@ -86,11 +87,11 @@ class UserRepository : ImageLoader {
     }
 
     private suspend fun save(user: User) {
-        val documentRef = db.collection(COLLECTION).document(user.id)
+        val documentRef = db.collection(IMAGE_COLLECTION).document(user.id)
 
         db.runBatch { batch ->
             batch.set(documentRef, user)
-            batch.update(documentRef, User.IMAGE_URI_KEY, null)
+            batch.update(documentRef, User.IMAGE_URI_KEY, user.avatarUrl)
             batch.update(documentRef, User.TIMESTAMP_KEY, FieldValue.serverTimestamp())
         }.await()
 
@@ -101,7 +102,7 @@ class UserRepository : ImageLoader {
         var user = AppLocalDB.getInstance().userDao().getById(userId)
 
         if (user == null) {
-            user = db.collection(COLLECTION)
+            user = db.collection(IMAGE_COLLECTION)
                 .document(userId)
                 .get()
                 .await().let { document ->
@@ -149,6 +150,7 @@ class UserRepository : ImageLoader {
 
     suspend fun signIn(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password).await()
+
     }
 
     fun logout() {
@@ -170,7 +172,7 @@ class UserRepository : ImageLoader {
         var time: Long = getLastUpdate()
 
         val users = runBlocking {
-            db.collection(COLLECTION)
+            db.collection(IMAGE_COLLECTION)
                 .whereGreaterThanOrEqualTo(User.TIMESTAMP_KEY, Timestamp(Date(time)))
                 .get().await().documents.map { document ->
                     document.data?.let {
@@ -203,9 +205,4 @@ class UserRepository : ImageLoader {
         App.context.getSharedPreferences("TAG", Context.MODE_PRIVATE)
             .edit().putLong(LAST_UPDATED, time).apply()
     }
-}
-
-// TODO: extract
-interface ImageLoader {
-    suspend fun getImagePath(imageId: String): String
 }
