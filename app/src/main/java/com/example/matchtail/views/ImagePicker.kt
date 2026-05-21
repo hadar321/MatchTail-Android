@@ -13,7 +13,8 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import com.bumptech.glide.Glide
+import com.example.matchtail.R
+import com.squareup.picasso.Picasso
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.model.AspectRatio
 import java.io.File
@@ -47,9 +48,10 @@ class ImagePicker @JvmOverloads constructor(
     }
 
     override fun setImageURI(uri: Uri?) {
-        if (uri != null && (uri.scheme == "http" || uri.scheme == "https")) {
-            Glide.with(this)
+        if (uri != null) {
+            Picasso.get()
                 .load(uri)
+                .placeholder(R.drawable.paw)
                 .into(this)
         } else {
             super.setImageURI(uri)

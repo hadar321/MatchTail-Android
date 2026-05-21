@@ -6,9 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
 import com.example.matchtail.R
 import com.example.matchtail.databinding.FragmentUserBinding
+import com.squareup.picasso.Picasso
+import java.io.File
 
 private const val USER_ID = "user_ID"
 
@@ -78,10 +79,19 @@ class UserFragment : Fragment() {
 
         viewModel?.avatarUrl?.observe(viewLifecycleOwner) { avatarUrl ->
             val avatar = binding?.profileAvatar
-            if (avatar != null) {
-                Glide.with(requireContext())
-                    .load(avatarUrl)
-                    .into(avatar)
+            if (avatar != null && !avatarUrl.isNullOrEmpty()) {
+                val file = File(avatarUrl)
+                if (file.exists()) {
+                    Picasso.get()
+                        .load(file)
+                        .placeholder(R.drawable.avatar_image)
+                        .into(avatar)
+                } else {
+                    Picasso.get()
+                        .load(avatarUrl)
+                        .placeholder(R.drawable.avatar_image)
+                        .into(avatar)
+                }
             }
         }
 

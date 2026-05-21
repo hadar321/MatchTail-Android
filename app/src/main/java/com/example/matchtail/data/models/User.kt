@@ -13,9 +13,9 @@ data class User (
     var lastUpdated: Long? = null
 ) {
     companion object {
-        private const val ID_KEY = "id"
-        private const val EMAIL_KEY = "email"
-        private const val USERNAME_KEY = "username"
+        internal const val ID_KEY = "id"
+        internal const val EMAIL_KEY = "email"
+        internal const val USERNAME_KEY = "username"
         internal const val IMAGE_URI_KEY = "avatarUrl"
         internal const val TIMESTAMP_KEY = "lastUpdated"
 

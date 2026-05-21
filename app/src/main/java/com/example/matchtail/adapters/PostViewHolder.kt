@@ -10,7 +10,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.matchtail.R
 import com.example.matchtail.data.models.InflatedPost
 import com.example.matchtail.data.repositories.PostRepository
@@ -18,6 +17,8 @@ import com.example.matchtail.data.repositories.UserRepository
 import com.example.matchtail.utils.BaseAlert
 import com.example.matchtail.utils.ImageLoaderViewModel
 import com.google.firebase.Timestamp
+import com.squareup.picasso.Picasso
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -57,7 +58,6 @@ class PostViewHolder(
             val post = post
             if (post != null) animalListener?.onClickListener(post)
         }
-        // TODO: on comment click create comment
 
         menu.setOnClickListener {
             PopupMenu(menu.context, menu).apply {
@@ -109,25 +109,48 @@ class PostViewHolder(
             date.text = dateFormat.format(Timestamp(Date(lastUpdated)).toDate())
         }
 
-        Glide.with(itemView.context).clear(animalImage)
         progressBarRestaurant.visibility = View.VISIBLE
-        imageLoaderViewModel.getImageUrl(post.id, PostRepository.getInstance()) {
+        imageLoaderViewModel.getImageUrl(post.id, PostRepository.getInstance()) { path ->
             if (post.id == this.post?.id) {
-                Glide.with(itemView.context)
-                    .load(it)
-                    .into(animalImage)
-                progressBarRestaurant.visibility = View.GONE
+                if (path.isNotEmpty()) {
+                    Picasso.get()
+                        .load(File(path))
+                        .placeholder(R.drawable.paw) // Assuming paw is a placeholder
+                        .into(animalImage, object : com.squareup.picasso.Callback {
+                            override fun onSuccess() {
+                                progressBarRestaurant.visibility = View.GONE
+                            }
+                            override fun onError(e: Exception?) {
+                                progressBarRestaurant.visibility = View.GONE
+                            }
+                        })
+                } else {
+                    animalImage.setImageResource(R.drawable.paw)
+                    progressBarRestaurant.visibility = View.GONE
+                }
             }
         }
+
         if (postType != PostType.PROFILE) {
-            Glide.with(itemView.context).clear(avatar)
             progressBarAvatar.visibility = View.VISIBLE
-            imageLoaderViewModel.getImageUrl(post.userId, UserRepository.getInstance()) {
+            imageLoaderViewModel.getImageUrl(post.userId, UserRepository.getInstance()) { path ->
                 if (post.id == this.post?.id) {
-                    Glide.with(itemView.context)
-                        .load(it)
-                        .into(avatar)
-                    progressBarAvatar.visibility = View.GONE
+                    if (path.isNotEmpty()) {
+                        Picasso.get()
+                            .load(File(path))
+                            .placeholder(R.drawable.avatar_image)
+                            .into(avatar, object : com.squareup.picasso.Callback {
+                                override fun onSuccess() {
+                                    progressBarAvatar.visibility = View.GONE
+                                }
+                                override fun onError(e: Exception?) {
+                                    progressBarAvatar.visibility = View.GONE
+                                }
+                            })
+                    } else {
+                        avatar.setImageResource(R.drawable.avatar_image)
+                        progressBarAvatar.visibility = View.GONE
+                    }
                 }
             }
         }

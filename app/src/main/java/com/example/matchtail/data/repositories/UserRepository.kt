@@ -14,7 +14,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.Date
@@ -167,19 +166,16 @@ class UserRepository : ImageLoader {
     private suspend fun saveImage(imageUri: String, userId: String) =
         imageRepository.upload(imageUri.toUri(), userId)
 
-    @Synchronized
-    fun refresh() {
+    suspend fun refresh() {
         var time: Long = getLastUpdate()
 
-        val users = runBlocking {
-            db.collection(IMAGE_COLLECTION)
-                .whereGreaterThanOrEqualTo(User.TIMESTAMP_KEY, Timestamp(Date(time)))
-                .get().await().documents.map { document ->
-                    document.data?.let {
-                        User.fromJSON(it).apply { id = document.id }
-                    }
+        val users = db.collection(IMAGE_COLLECTION)
+            .whereGreaterThanOrEqualTo(User.TIMESTAMP_KEY, Timestamp(Date(time)))
+            .get().await().documents.map { document ->
+                document.data?.let {
+                    User.fromJSON(it).apply { id = document.id }
                 }
-        }
+            }
 
         for (user in users) {
             if (user == null) continue
