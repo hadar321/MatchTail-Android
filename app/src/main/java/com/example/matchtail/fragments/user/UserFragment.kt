@@ -6,10 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.matchtail.R
+import com.example.matchtail.adapters.OnPostItemClickListener
 import com.example.matchtail.adapters.PaddedItemDecoration
+import com.example.matchtail.adapters.PostType
 import com.example.matchtail.adapters.PostsRecyclerAdapter
+import com.example.matchtail.data.models.InflatedPost
+import com.example.matchtail.data.repositories.UserRepository
 import com.example.matchtail.databinding.FragmentUserBinding
 import com.squareup.picasso.Picasso
 import java.io.File
@@ -77,6 +82,20 @@ class UserFragment : Fragment() {
         
         val vm = viewModel ?: return
         val adapter = PostsRecyclerAdapter(emptyList(), vm)
+        
+        // Only enable edit/delete menu if this is the logged-in user's profile
+        if (userId == UserRepository.getInstance().getLoggedUserId()) {
+            adapter.postType = PostType.PROFILE
+            adapter.editPostListener = object : OnPostItemClickListener {
+                override fun onClickListener(post: InflatedPost) {
+                    val action = ProfileFragmentDirections.actionProfileFragmentToPostFormFragment(post.id)
+                    findNavController().navigate(action)
+                }
+            }
+        } else {
+            adapter.postType = PostType.REGULAR
+        }
+
         binding?.postsRecyclerView?.adapter = adapter
 
         vm.posts.observe(viewLifecycleOwner) { posts ->

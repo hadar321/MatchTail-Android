@@ -72,6 +72,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:hint="@string/full_name"
+                            android:text="@={viewModel.name}"
                             android:inputType="textPersonName" />
 
                         <com.example.matchtail.views.EditTextInput
@@ -80,6 +81,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:hint="@string/phone_number"
+                            android:text="@={viewModel.phone}"
                             android:inputType="phone" />
 
                         <com.example.matchtail.views.EditTextInput
@@ -87,6 +89,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="12dp"
+                            android:text="@={viewModel.location}"
                             android:hint="@string/location_city" />
 
                         <TextView
@@ -122,6 +125,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="24dp"
                             android:hint="@string/about_me"
+                            android:text="@={viewModel.description}"
                             android:lines="3" />
 
                         <View
@@ -144,6 +148,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:hint="@string/old_password_text"
+                            android:text="@={viewModel.oldPassword}"
                             android:inputType="textPassword" />
 
                         <com.example.matchtail.views.EditTextInput
@@ -152,6 +157,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:hint="@string/new_password"
+                            android:text="@={viewModel.password}"
                             android:inputType="textPassword" />
 
                         <com.example.matchtail.views.EditTextInput
@@ -160,6 +166,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="24dp"
                             android:hint="@string/confirm_new_password"
+                            android:text="@={viewModel.confirmPassword}"
                             android:inputType="textPassword" />
 
                         <FrameLayout

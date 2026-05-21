@@ -4,6 +4,9 @@
         android:id="@+id/edit_post"
         android:title="Edit" />
     <item
+        android:id="@+id/set_relevance"
+        android:title="Toggle Relevance" />
+    <item
         android:id="@+id/delete_post"
         android:title="Delete" />
 </menu>

@@ -34,6 +34,9 @@
         <action
             android:id="@+id/action_profileFragment_to_editUserFragment"
             app:destination="@id/editUserFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_postFormFragment"
+            app:destination="@id/postFormFragment" />
     </fragment>
     <fragment
         android:id="@+id/editUserFragment"

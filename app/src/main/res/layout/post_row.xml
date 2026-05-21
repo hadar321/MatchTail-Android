@@ -51,6 +51,20 @@
         app:layout_constraintStart_toEndOf="@id/post_row_avatar"
         app:layout_constraintTop_toBottomOf="@id/post_row_username" />
 
+    <TextView
+        android:id="@+id/post_row_relevant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="STILL RELEVANT"
+        android:textColor="@color/matchtail_green"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/post_row_animal"
+        app:layout_constraintStart_toEndOf="@id/post_row_animal"
+        app:layout_constraintTop_toTopOf="@id/post_row_animal" />
+
     <ImageView
         android:id="@+id/post_row_menu"
         android:layout_width="wrap_content"

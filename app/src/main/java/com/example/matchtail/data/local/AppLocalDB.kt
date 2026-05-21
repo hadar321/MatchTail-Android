@@ -23,7 +23,7 @@ import com.example.matchtail.data.models.User
 @Database(
     entities = [User::class, Image::class, Post::class, Animal::class, Comment::class],
     views = [InflatedPost::class, InflatedComment::class],
-    version = 10,
+    version = 11,
     exportSchema = true
 )
 abstract class AppLocalDbRepository : RoomDatabase() {

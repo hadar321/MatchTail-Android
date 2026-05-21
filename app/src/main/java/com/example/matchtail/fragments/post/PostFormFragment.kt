@@ -7,11 +7,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
+import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -21,6 +21,7 @@ import com.example.matchtail.R
 import com.example.matchtail.databinding.FragmentPostFormBinding
 import com.example.matchtail.utils.BaseAlert
 import com.yalantis.ucrop.UCrop
+import java.io.File
 
 class PostFormFragment : Fragment() {
     private val args: PostFormFragmentArgs by navArgs()
@@ -65,17 +66,14 @@ class PostFormFragment : Fragment() {
         }
 
         viewModel.selectedAnimal.observe(viewLifecycleOwner) { selected ->
-            val position = viewModel.animalNames.value?.indexOf(selected) ?: -1
-            if (position != -1) {
-                autoCompleteTextView?.setText(selected)
+            if (autoCompleteTextView?.text.toString() != selected) {
+                autoCompleteTextView?.setText(selected, false)
             }
         }
 
-        autoCompleteTextView?.onItemClickListener =
-            AdapterView.OnItemClickListener { parent, _, position, _ ->
-                val selected = parent.getItemAtPosition(position).toString()
-                viewModel.selectedAnimal.value = selected
-            }
+        autoCompleteTextView?.doOnTextChanged { text, _, _, _ ->
+            viewModel.selectedAnimal.value = text.toString()
+        }
     }
 
     private fun bindViews() {
@@ -124,8 +122,15 @@ class PostFormFragment : Fragment() {
         binding?.imageView?.setOnClickListener {
             imagePicker.launch("image/*")
         }
-        viewModel.imageUri.observe(viewLifecycleOwner) { uri ->
-            if (uri != "") binding?.imageView?.setImageURI(uri.toUri())
+        viewModel.imageUri.observe(viewLifecycleOwner) { uriString ->
+            if (!uriString.isNullOrEmpty()) {
+                val uri = if (uriString.startsWith("/") && !uriString.startsWith("//")) {
+                    Uri.fromFile(File(uriString))
+                } else {
+                    uriString.toUri()
+                }
+                binding?.imageView?.setImageURI(uri)
+            }
         }
     }
 
@@ -137,7 +142,8 @@ class PostFormFragment : Fragment() {
     private fun getUCropLauncher() =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val uri = UCrop.getOutput(result.data!!)
+                val data = result.data ?: return@registerForActivityResult
+                val uri = UCrop.getOutput(data)
                 binding?.imageView?.setImageURI(uri)
                 viewModel.imageUri.value = uri.toString()
             }

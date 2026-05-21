@@ -17,5 +17,6 @@ data class InflatedPost(
     var animalPictureUrl: String = "",
     var avatarUrl: String? = null,
     var isAdopt: Boolean = false,
+    var isRelevant: Boolean = true,
     var lastUpdated: Long? = null
 )
