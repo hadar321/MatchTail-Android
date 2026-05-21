@@ -3,6 +3,7 @@ package com.example.matchtail.data.local
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.matchtail.App
 import com.example.matchtail.data.local.dao.AnimalDAO
 import com.example.matchtail.data.local.dao.CommentDAO
@@ -23,9 +24,10 @@ import com.example.matchtail.data.models.User
 @Database(
     entities = [User::class, Image::class, Post::class, Animal::class, Comment::class],
     views = [InflatedPost::class, InflatedComment::class],
-    version = 11,
+    version = 12,
     exportSchema = true
 )
+@TypeConverters(Converters::class)
 abstract class AppLocalDbRepository : RoomDatabase() {
     abstract fun userDao(): UserDAO
     abstract fun imageDao(): ImageDAO

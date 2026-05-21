@@ -4,7 +4,9 @@ import androidx.room.DatabaseView
 
 @DatabaseView(
     viewName = "inflatedPosts",
-    value = "SELECT posts.*, users.username AS userName, users.avatarUrl AS avatarUrl FROM posts " +
+    value = "SELECT posts.*, users.username AS userName, users.avatarUrl AS avatarUrl, " +
+            "(SELECT COUNT(*) FROM comments WHERE comments.postId = posts.id) AS commentCount " +
+            "FROM posts " +
             "INNER JOIN users ON posts.userId = users.id " +
             "ORDER BY posts.lastUpdated DESC"
 )
@@ -18,5 +20,7 @@ data class InflatedPost(
     var avatarUrl: String? = null,
     var isAdopt: Boolean = false,
     var isRelevant: Boolean = true,
-    var lastUpdated: Long? = null
+    var lastUpdated: Long? = null,
+    var interests: List<String> = listOf(),
+    var commentCount: Int = 0
 )

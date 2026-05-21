@@ -14,7 +14,8 @@ data class Post (
     var animalPictureUrl: String = "",
     var isAdopt: Boolean = false,
     var isRelevant: Boolean = true,
-    var lastUpdated: Long? = null
+    var lastUpdated: Long? = null,
+    var interests: List<String> = listOf()
 ) {
     companion object {
         private const val ID_KEY = "id"
@@ -25,6 +26,7 @@ data class Post (
         private const val ADOPTING_KEY = "adopt"
         private const val IS_RELEVANT_KEY = "isRelevant"
         internal const val TIMESTAMP_KEY = "lastUpdated"
+        internal const val INTERESTS_KEY = "interests"
 
         fun fromJSON(json: Map<String, Any>): Post {
             val id = json[ID_KEY] as? String ?: ""
@@ -36,8 +38,9 @@ data class Post (
             val isRelevant = json[IS_RELEVANT_KEY] as? Boolean ?: true
             val timestamp = (json[TIMESTAMP_KEY] as? Timestamp ?: Timestamp(0,0))
             val lastUpdated = timestamp.toDate().time
+            val interests = json[INTERESTS_KEY] as? List<String> ?: listOf()
 
-            return Post(id, userId, animalId, content, animalPictureUrl, isAdopting, isRelevant, lastUpdated)
+            return Post(id, userId, animalId, content, animalPictureUrl, isAdopting, isRelevant, lastUpdated, interests)
         }
     }
 
@@ -50,7 +53,8 @@ data class Post (
             IMAGE_URI_KEY to animalPictureUrl,
             ADOPTING_KEY to isAdopt,
             IS_RELEVANT_KEY to isRelevant,
-            TIMESTAMP_KEY to Timestamp(java.util.Date(lastUpdated ?: 0))
+            TIMESTAMP_KEY to Timestamp(java.util.Date(lastUpdated ?: 0)),
+            INTERESTS_KEY to interests
         )
     }
 }

@@ -111,26 +111,105 @@
         app:layout_constraintStart_toStartOf="@+id/post_row_animal_image"
         app:layout_constraintTop_toTopOf="@+id/post_row_animal_image" />
 
-    <!-- Change to Icon -->
-    <android.widget.Button
-        android:id="@+id/post_row_comment_button"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/bordered_button"
-        android:text="Comment"
-        android:textAllCaps="false"
-        android:textColor="@color/matchtail_dark_green"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/post_row_animal_image" />
-
-    <TextView
-        android:id="@+id/date"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/post_row_actions"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:text="00/00/0000"
-        app:layout_constraintBottom_toBottomOf="@id/post_row_comment_button"
-        app:layout_constraintStart_toEndOf="@id/post_row_comment_button"
-        app:layout_constraintTop_toTopOf="@id/post_row_comment_button" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/post_row_animal_image">
+
+        <android.widget.Button
+            android:id="@+id/post_row_interest_button"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:background="@drawable/bordered_button"
+            android:text="Interest"
+            android:textAllCaps="false"
+            android:textColor="@color/matchtail_dark_green" />
+
+        <TextView
+            android:id="@+id/post_row_interests_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="0"
+            android:textColor="@color/black" />
+
+        <android.widget.Button
+            android:id="@+id/post_row_comment_button"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bordered_button"
+            android:text="Comment"
+            android:textAllCaps="false"
+            android:textColor="@color/matchtail_dark_green" />
+
+        <TextView
+            android:id="@+id/post_row_comments_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="0"
+            android:textColor="@color/black" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp"
+            android:text="00/00/0000" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/post_row_comments_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/post_row_actions">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/post_row_comments_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/post_row_comment_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Write a comment..."
+                android:textSize="14sp"
+                android:background="@android:drawable/editbox_background_normal"
+                android:padding="8dp" />
+
+            <android.widget.Button
+                android:id="@+id/post_row_comment_publish_button"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Publish"
+                android:textAllCaps="false"
+                android:background="@drawable/bordered_button"
+                android:textColor="@color/matchtail_dark_green"
+                android:layout_marginStart="4dp" />
+        </LinearLayout>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
