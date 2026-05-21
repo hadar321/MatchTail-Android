@@ -15,19 +15,26 @@ class RegisterViewModel : ViewModel() {
     val email = MutableLiveData("")
     val password = MutableLiveData("")
     val confirmPassword = MutableLiveData("")
-    val avatarUri = MutableLiveData("")
+    val avatarUri = MutableLiveData<String?>(null)
+    val role = MutableLiveData("") // "Adopter" or "Giver"
+    val phone = MutableLiveData("")
+    val location = MutableLiveData("")
+    val description = MutableLiveData("")
 
     val isNameValid = MutableLiveData(true)
     val isEmailValid = MutableLiveData(true)
     val isPasswordValid = MutableLiveData(true)
     val isConfirmPasswordValid = MutableLiveData(true)
-    val isAvatarUriValid = MutableLiveData(true)
+    val isRoleValid = MutableLiveData(true)
+    val isPhoneValid = MutableLiveData(true)
+    val isLocationValid = MutableLiveData(true)
 
     var isLoading = false
 
     val isFormValid: Boolean
         get() = isNameValid.value == true && isEmailValid.value == true
-                && isPasswordValid.value == true && isConfirmPasswordValid.value == true && isAvatarUriValid.value == true
+                && isPasswordValid.value == true && isConfirmPasswordValid.value == true
+                && isRoleValid.value == true && isPhoneValid.value == true && isLocationValid.value == true
 
     private val validator = UserValidator()
 
@@ -43,12 +50,19 @@ class RegisterViewModel : ViewModel() {
             isLoading = true
             viewModelScope.launch(Dispatchers.IO) {
                 try {
-                    val email = email.value ?: throw Exception("Email is required")
-                    val password = password.value ?: throw Exception("Password is required")
-                    val name = name.value ?: throw Exception("Name is required")
-                    val avatarUri = avatarUri.value ?: throw Exception("Avatar is required")
+                    val emailVal = email.value ?: throw Exception("Email is required")
+                    val passwordVal = password.value ?: throw Exception("Password is required")
+                    val nameVal = name.value ?: throw Exception("Name is required")
+                    val roleVal = role.value ?: throw Exception("Role is required")
+                    val phoneVal = phone.value ?: throw Exception("Phone is required")
+                    val locationVal = location.value ?: throw Exception("Location is required")
+                    val descriptionVal = description.value
+                    val avatarUriVal = avatarUri.value
 
-                    UserRepository.getInstance().create(email, password, name, avatarUri)
+                    UserRepository.getInstance().create(
+                        emailVal, passwordVal, nameVal, avatarUriVal,
+                        roleVal, phoneVal, locationVal, descriptionVal
+                    )
                 } catch (e: Exception) {
                     Log.e("Register", "Error registering user", e)
                     withContext(Dispatchers.Main) { onFailure(e) }
@@ -68,6 +82,8 @@ class RegisterViewModel : ViewModel() {
         isPasswordValid.value = validator.validatePassword(password.value)
         isConfirmPasswordValid.value =
             validator.validateConfirmPassword(password.value, confirmPassword.value)
-        isAvatarUriValid.value = avatarUri.value?.isNotEmpty() == true
+        isRoleValid.value = role.value?.isNotEmpty() == true
+        isPhoneValid.value = phone.value?.isNotEmpty() == true
+        isLocationValid.value = location.value?.isNotEmpty() == true
     }
 }

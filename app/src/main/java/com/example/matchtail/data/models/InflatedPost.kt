@@ -1,7 +1,6 @@
 package com.example.matchtail.data.models
 
 import androidx.room.DatabaseView
-import androidx.room.PrimaryKey
 
 @DatabaseView(
     viewName = "inflatedPosts",
@@ -10,14 +9,13 @@ import androidx.room.PrimaryKey
             "ORDER BY posts.lastUpdated DESC"
 )
 data class InflatedPost(
-    @PrimaryKey
     var id: String = "",
     var userId: String = "",
-    var userName: String = "",
+    var userName: String? = null,
     var animalId: String = "",
     var content: String = "",
     var animalPictureUrl: String = "",
-    var avatarUrl: String = "",
+    var avatarUrl: String? = null,
     var isAdopt: Boolean = false,
     var lastUpdated: Long? = null
 )

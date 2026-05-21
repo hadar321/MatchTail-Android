@@ -2,10 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".fragments.editUser.EditUserFragment">
+    tools:context=".fragments.user.edit.EditUserFragment">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.example.matchtail.fragments.user.edit.EditUserViewModel" />
@@ -14,162 +13,180 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:ignore="ScrollViewSize">
+        android:background="#F8F9FA">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/edit_user_toolbar"
+            android:id="@+id/editUserToolbar"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="?android:attr/actionBarSize"
             android:background="@color/matchtail_green"
-            android:minHeight="?android:attr/actionBarSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:theme="@style/ThemeOverlay.Material3.ActionBar">
+            app:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
             <TextView
-                android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="MatchTail"
-                android:textColor="@color/matchtail_white"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
-
+                android:text="@string/edit_profile"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </androidx.appcompat.widget.Toolbar>
 
-        <ScrollView
-            android:id="@+id/scroll_container"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:fillViewport="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edit_user_toolbar">
+            app:layout_constraintTop_toBottomOf="@id/editUserToolbar">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:ignore="ScrollViewSize">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-                <LinearLayout
-                    android:id="@+id/inputs"
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toTopOf="@id/progress_bar"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="4dp">
 
-                    <com.example.matchtail.views.EditTextInput
-                        android:id="@+id/name"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="64dp"
-                        android:layout_marginEnd="64dp"
-                        android:ems="10"
-                        android:hint="@string/name_text"
-                        android:text="@={viewModel.name}"
-                        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-                        app:helperText="@{ viewModel.isNameValid() ? null : @string/name_error}"
-                        app:helperTextEnabled="@{!viewModel.isNameValid()}"
-                        app:helperTextTextColor="@color/design_default_color_error" />
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
-                    <com.example.matchtail.views.EditTextInput
-                        android:id="@+id/old_password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="64dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginEnd="64dp"
-                        android:ems="10"
-                        android:hint="@string/old_password_text"
-                        android:inputType="textPassword"
-                        android:text="@={viewModel.oldPassword}"
-                        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+                        <com.example.matchtail.views.ImagePicker
+                            android:id="@+id/imageView"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="24dp"
+                            android:src="@drawable/avatar_image" />
 
-                    <com.example.matchtail.views.EditTextInput
-                        android:id="@+id/password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="64dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginEnd="64dp"
-                        android:ems="10"
-                        android:hint="@string/password_text"
-                        android:inputType="textPassword"
-                        android:text="@={viewModel.password}"
-                        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-                        app:helperText="@{viewModel.isPasswordValid() ? null :@string/password_error}"
-                        app:helperTextEnabled="@{!viewModel.isPasswordValid()}"
-                        app:helperTextTextColor="@color/design_default_color_error" />
+                        <com.example.matchtail.views.EditTextInput
+                            android:id="@+id/name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:hint="@string/full_name"
+                            android:inputType="textPersonName" />
 
-                    <com.example.matchtail.views.EditTextInput
-                        android:id="@+id/confirm_password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="64dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginEnd="64dp"
-                        android:ems="10"
-                        android:hint="@string/confirm_password_text"
-                        android:inputType="textPassword"
-                        android:text="@={viewModel.confirmPassword}"
-                        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-                        app:helperText="@{viewModel.isConfirmPasswordValid() ? null :@string/confirm_password_error}"
-                        app:helperTextEnabled="@{!viewModel.isConfirmPasswordValid()}"
-                        app:helperTextTextColor="@color/design_default_color_error" />
+                        <com.example.matchtail.views.EditTextInput
+                            android:id="@+id/phone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:hint="@string/phone_number"
+                            android:inputType="phone" />
 
-                    <com.example.matchtail.views.ImagePicker
-                        android:id="@+id/image_view"
-                        android:layout_width="150sp"
-                        android:layout_height="150sp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="20dp"
-                        android:contentDescription="@string/upload_image_text"
-                        android:src="@drawable/add_picture" />
+                        <com.example.matchtail.views.EditTextInput
+                            android:id="@+id/location"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            android:hint="@string/location_city" />
 
-                </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/role_prompt"
+                            android:layout_marginBottom="8dp"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"/>
 
+                        <RadioGroup
+                            android:id="@+id/roleGroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="12dp">
+                            <RadioButton
+                                android:id="@+id/roleAdopter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/adopt_pet"
+                                android:layout_marginEnd="16dp"/>
+                            <RadioButton
+                                android:id="@+id/roleGiver"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/send_pet"/>
+                        </RadioGroup>
 
-                <android.widget.Button
-                    android:id="@+id/submit_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="@color/matchtail_dark_green"
-                    android:paddingStart="30dp"
-                    android:paddingEnd="30dp"
-                    android:text="@string/save_changes"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toTopOf="@id/inputs"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                        <com.example.matchtail.views.EditTextInput
+                            android:id="@+id/description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="24dp"
+                            android:hint="@string/about_me"
+                            android:lines="3" />
 
-                <com.google.android.material.progressindicator.CircularProgressIndicator
-                    android:id="@+id/progress_bar"
-                    style="@style/Widget.MaterialComponents.CircularProgressIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:indeterminate="true"
-                    android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/inputs" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#EEEEEE"
+                            android:layout_marginBottom="24dp"/>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/change_password_optional"
+                            android:layout_marginBottom="12dp"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"/>
 
-        </ScrollView>
+                        <com.example.matchtail.views.EditTextInput
+                            android:id="@+id/oldPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:hint="@string/old_password_text"
+                            android:inputType="textPassword" />
 
+                        <com.example.matchtail.views.EditTextInput
+                            android:id="@+id/password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:hint="@string/new_password"
+                            android:inputType="textPassword" />
+
+                        <com.example.matchtail.views.EditTextInput
+                            android:id="@+id/confirmPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="24dp"
+                            android:hint="@string/confirm_new_password"
+                            android:inputType="textPassword" />
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <Button
+                                android:id="@+id/submitButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:backgroundTint="@color/matchtail_green"
+                                android:text="@string/save_changes"
+                                android:textAllCaps="false"
+                                android:textSize="18sp"
+                                app:cornerRadius="8dp" />
+
+                            <com.google.android.material.progressindicator.CircularProgressIndicator
+                                android:id="@+id/progressBar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:indeterminate="true"
+                                android:visibility="invisible" />
+                        </FrameLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

@@ -15,17 +15,25 @@ class EditUserViewModel : ViewModel() {
     val oldPassword = MutableLiveData("")
     val password = MutableLiveData("")
     val confirmPassword = MutableLiveData("")
-    val avatarUri = MutableLiveData("")
+    val avatarUri = MutableLiveData<String?>(null)
+    val role = MutableLiveData("")
+    val phone = MutableLiveData("")
+    val location = MutableLiveData("")
+    val description = MutableLiveData("")
 
     val isNameValid = MutableLiveData(true)
     val isPasswordValid = MutableLiveData(true)
     val isConfirmPasswordValid = MutableLiveData(true)
+    val isRoleValid = MutableLiveData(true)
+    val isPhoneValid = MutableLiveData(true)
+    val isLocationValid = MutableLiveData(true)
 
     val isLoading = MutableLiveData(false)
 
     val isFormValid: Boolean
         get() = isNameValid.value == true && isPasswordValid.value == true &&
-                isConfirmPasswordValid.value == true
+                isConfirmPasswordValid.value == true && isRoleValid.value == true &&
+                isPhoneValid.value == true && isLocationValid.value == true
 
     private val validator = UserValidator()
 
@@ -35,26 +43,26 @@ class EditUserViewModel : ViewModel() {
 
     private fun fetchUserDetails() {
         isLoading.value = true
-        try {
-            viewModelScope.launch(Dispatchers.IO) {
-                try {
-                    val userId = UserRepository.getInstance().getLoggedUserId()
-                        ?: throw Exception("User not logged in")
-                    val user = UserRepository.getInstance().getById(userId)
-                        ?: throw Exception("User not found")
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val userId = UserRepository.getInstance().getLoggedUserId()
+                    ?: throw Exception("User not logged in")
+                val user = UserRepository.getInstance().getById(userId)
+                    ?: throw Exception("User not found")
 
-                    withContext(Dispatchers.Main) {
-                        name.value = user.username
-                        avatarUri.value = user.avatarUrl
-                    }
-                } catch (e: Exception) {
-                    Log.e("Edit", "Error fetching user details", e)
-                } finally {
-                    withContext(Dispatchers.Main) { isLoading.value = false }
+                withContext(Dispatchers.Main) {
+                    name.value = user.username
+                    avatarUri.value = user.avatarUrl
+                    role.value = user.role
+                    phone.value = user.phone
+                    location.value = user.location
+                    description.value = user.description ?: ""
                 }
+            } catch (e: Exception) {
+                Log.e("Edit", "Error fetching user details", e)
+            } finally {
+                withContext(Dispatchers.Main) { isLoading.value = false }
             }
-        } catch (e: Exception) {
-            Log.e("Edit", "Error fetching user details", e)
         }
     }
 
@@ -66,39 +74,45 @@ class EditUserViewModel : ViewModel() {
             return
         }
 
-        try {
-            isLoading.value = true
-            viewModelScope.launch(Dispatchers.IO) {
-                try {
-                    val oldPassword =
-                        oldPassword.value ?: throw Exception("Old password is required")
-                    val password = password.value ?: throw Exception("Password is required")
-                    val name = name.value ?: throw Exception("Name is required")
-                    val avatarUri = avatarUri.value ?: throw Exception("Avatar is required")
+        isLoading.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val oldPwd = oldPassword.value ?: ""
+                val pwd = password.value ?: ""
+                val nameVal = name.value ?: throw Exception("Name is required")
+                val avatarVal = avatarUri.value
+                val roleVal = role.value ?: throw Exception("Role is required")
+                val phoneVal = phone.value ?: throw Exception("Phone is required")
+                val locationVal = location.value ?: throw Exception("Location is required")
+                val descVal = description.value
 
-                    UserRepository.getInstance().update(oldPassword, password, name, avatarUri)
-                    withContext(Dispatchers.Main) { onSuccess() }
-                } catch (e: Exception) {
-                    Log.e("Edit", "Error registering user", e)
-                    withContext(Dispatchers.Main) { onFailure(e) }
-                } finally {
-                    withContext(Dispatchers.Main) { isLoading.value = false }
-                }
+                UserRepository.getInstance().update(
+                    oldPwd, pwd, nameVal, avatarVal,
+                    roleVal, phoneVal, locationVal, descVal
+                )
+                withContext(Dispatchers.Main) { onSuccess() }
+            } catch (e: Exception) {
+                Log.e("Edit", "Error updating user", e)
+                withContext(Dispatchers.Main) { onFailure(e) }
+            } finally {
+                withContext(Dispatchers.Main) { isLoading.value = false }
             }
-        } catch (e: Exception) {
-            Log.d("Validaing", "6")
-            Log.e("Edit", "Error registering user", e)
-            onFailure(e)
         }
     }
 
     private fun validateForm() {
         isNameValid.value = name.value?.isNotEmpty() == true
+        isRoleValid.value = role.value?.isNotEmpty() == true
+        isPhoneValid.value = phone.value?.isNotEmpty() == true
+        isLocationValid.value = location.value?.isNotEmpty() == true
 
         if (password.value?.isNotEmpty() == true) {
             isPasswordValid.value = validator.validatePassword(password.value)
             isConfirmPasswordValid.value =
                 validator.validateConfirmPassword(password.value, confirmPassword.value)
+        } else {
+            isPasswordValid.value = true
+            isConfirmPasswordValid.value = true
         }
     }
 }
