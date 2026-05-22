@@ -12,9 +12,12 @@ interface ImageDAO {
     @Query("SELECT * FROM images WHERE id = :id")
     fun getById(id: String): LiveData<Image>
 
+    @Query("SELECT * FROM images WHERE id = :id")
+    suspend fun getByIdSync(id: String): Image?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(vararg images: Image)
+    suspend fun insertAll(vararg images: Image)
 
     @Query("DELETE FROM images WHERE id = :id")
-    fun delete(id: String)
+    suspend fun delete(id: String)
 }
