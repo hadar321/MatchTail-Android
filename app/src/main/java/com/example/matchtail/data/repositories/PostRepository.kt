@@ -20,6 +20,7 @@ class PostRepository : ImageLoader {
         private const val COLLECTION = "posts"
         private const val LAST_UPDATED = "postsLastUpdated"
         private const val IS_RELEVANT_KEY = "isRelevant"
+        private const val INTERESTS_KEY = "interests"
 
         private val postRepository = PostRepository()
 
@@ -135,6 +136,20 @@ class PostRepository : ImageLoader {
             post.isRelevant = isRelevant
             AppLocalDB.getInstance().postDao().insertAll(post)
         }
+    }
+
+    suspend fun toggleInterest(postId: String, userId: String) {
+        val post = getById(postId) ?: return
+        val interests = post.interests.toMutableList()
+        if (interests.contains(userId)) {
+            interests.remove(userId)
+        } else {
+            interests.add(userId)
+        }
+        
+        db.collection(COLLECTION).document(postId).update(INTERESTS_KEY, interests).await()
+        post.interests = interests
+        AppLocalDB.getInstance().postDao().insertAll(post)
     }
 
     suspend fun refresh() {

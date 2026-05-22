@@ -60,8 +60,19 @@
             android:name="userId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/commentsFragment"
+        android:name="com.example.matchtail.fragments.post.comments.CommentsFragment"
+        android:label="Comments">
+        <argument
+            android:name="postId"
+            app:argType="string" />
+    </fragment>
     <action
         android:id="@+id/action_global_userPageFragment"
         app:destination="@id/userPageFragment"
         app:popUpToInclusive="true" />
+    <action
+        android:id="@+id/action_global_commentsFragment"
+        app:destination="@id/commentsFragment" />
 </navigation>

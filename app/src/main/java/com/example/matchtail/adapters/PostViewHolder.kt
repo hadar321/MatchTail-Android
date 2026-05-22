@@ -3,7 +3,9 @@ package com.example.matchtail.adapters
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -11,11 +13,16 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.matchtail.R
+import com.example.matchtail.data.models.Comment
 import com.example.matchtail.data.models.InflatedPost
+import com.example.matchtail.data.repositories.CommentRepository
+import com.example.matchtail.data.repositories.InflatedCommentRepository
 import com.example.matchtail.data.repositories.PostRepository
 import com.example.matchtail.data.repositories.UserRepository
+import com.example.matchtail.fragments.post.comments.CommentsAdapter
 import com.example.matchtail.utils.BaseAlert
 import com.example.matchtail.utils.ImageLoaderViewModel
 import com.google.firebase.Timestamp
@@ -26,13 +33,14 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 class PostViewHolder(
     itemView: View,
     animalListener: OnPostItemClickListener?,
     userListener: OnPostItemClickListener?,
     editPostListener: OnPostItemClickListener?,
-    fragmentManager: FragmentManager?,
+    private val fragmentManager: FragmentManager?,
     private val imageLoaderViewModel: ImageLoaderViewModel,
     private val postType: PostType
 ) : RecyclerView.ViewHolder(itemView) {
@@ -43,11 +51,21 @@ class PostViewHolder(
     private var content: TextView = itemView.findViewById(R.id.post_row_content)
     private var animalImage: ImageView = itemView.findViewById(R.id.post_row_animal_image)
     private var avatar: ImageView = itemView.findViewById(R.id.post_row_avatar)
-    private var comment: Button = itemView.findViewById(R.id.post_row_comment_button)
+    private var interestButton: Button = itemView.findViewById(R.id.post_row_interest_button)
+    private var interestsCount: TextView = itemView.findViewById(R.id.post_row_interests_count)
+    private var commentButton: Button = itemView.findViewById(R.id.post_row_comment_button)
+    private var commentsCount: TextView = itemView.findViewById(R.id.post_row_comments_count)
     private var date: TextView = itemView.findViewById(R.id.date)
     private var relevant: TextView = itemView.findViewById(R.id.post_row_relevant)
     private var progressBarAvatar: View = itemView.findViewById(R.id.progress_bar_avatar)
     private var progressBarRestaurant: View = itemView.findViewById(R.id.progress_bar_animal)
+
+    // Comments internal components
+    private var commentsContainer: LinearLayout = itemView.findViewById(R.id.post_row_comments_container)
+    private var commentsRecyclerView: RecyclerView = itemView.findViewById(R.id.post_row_comments_recycler)
+    private var commentInput: EditText = itemView.findViewById(R.id.post_row_comment_input)
+    private var commentPublishButton: Button = itemView.findViewById(R.id.post_row_comment_publish_button)
+    private var commentsAdapter: CommentsAdapter? = null
 
     private var post: InflatedPost? = null
 
@@ -63,6 +81,55 @@ class PostViewHolder(
         animal.setOnClickListener {
             val post = post
             if (post != null) animalListener?.onClickListener(post)
+        }
+
+        interestButton.setOnClickListener {
+            val post = post ?: return@setOnClickListener
+            val userId = UserRepository.getInstance().getLoggedUserId() ?: return@setOnClickListener
+            itemView.findViewTreeLifecycleOwner()?.lifecycleScope?.launch(Dispatchers.IO) {
+                try {
+                    PostRepository.getInstance().toggleInterest(post.id, userId)
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        BaseAlert("Error", "Failed to update interest", itemView.context).show()
+                    }
+                }
+            }
+        }
+
+        commentButton.setOnClickListener {
+            if (commentsContainer.visibility == View.VISIBLE) {
+                commentsContainer.visibility = View.GONE
+            } else {
+                commentsContainer.visibility = View.VISIBLE
+                setupCommentsList()
+            }
+        }
+
+        commentPublishButton.setOnClickListener {
+            val content = commentInput.text.toString()
+            val post = post ?: return@setOnClickListener
+            val userId = UserRepository.getInstance().getLoggedUserId() ?: return@setOnClickListener
+
+            if (content.isNotBlank()) {
+                val comment = Comment(
+                    userId = userId,
+                    postId = post.id,
+                    content = content
+                )
+                itemView.findViewTreeLifecycleOwner()?.lifecycleScope?.launch(Dispatchers.IO) {
+                    try {
+                        CommentRepository.getInstance().save(comment)
+                        withContext(Dispatchers.Main) {
+                            commentInput.text.clear()
+                        }
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            BaseAlert("Error", "Failed to post comment", itemView.context).show()
+                        }
+                    }
+                }
+            }
         }
 
         menu.setOnClickListener {
@@ -113,6 +180,22 @@ class PostViewHolder(
         }
     }
 
+    private fun setupCommentsList() {
+        val post = post ?: return
+        if (commentsAdapter == null) {
+            commentsAdapter = CommentsAdapter(emptyList(), imageLoaderViewModel)
+            commentsRecyclerView.layoutManager = LinearLayoutManager(itemView.context)
+            commentsRecyclerView.adapter = commentsAdapter
+        }
+
+        val lifecycleOwner = itemView.findViewTreeLifecycleOwner()
+        if (lifecycleOwner != null) {
+            InflatedCommentRepository.getInstance().getByPostId(post.id).observe(lifecycleOwner) { comments ->
+                commentsAdapter?.updateComments(comments)
+            }
+        }
+    }
+
     fun bind(post: InflatedPost?, position: Int) {
         layout.alpha = 1F
         this.post = post
@@ -122,10 +205,21 @@ class PostViewHolder(
         username.text = post.userName
         animal.text = post.animalId
         content.text = post.content
+        interestsCount.text = post.interests.size.toString()
+        commentsCount.text = post.commentCount.toString()
+
+        val userId = UserRepository.getInstance().getLoggedUserId()
+        if (userId != null && post.interests.contains(userId)) {
+            interestButton.setTextColor(itemView.context.getColor(R.color.matchtail_green))
+            interestButton.text = "Interested"
+        } else {
+            interestButton.setTextColor(itemView.context.getColor(R.color.matchtail_dark_green))
+            interestButton.text = "Interest"
+        }
 
         val lastUpdated = post.lastUpdated
         if (lastUpdated != null) {
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy")
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             date.text = dateFormat.format(Timestamp(Date(lastUpdated)).toDate())
         }
 
@@ -191,6 +285,9 @@ class PostViewHolder(
         } else {
             menu.visibility = View.GONE
         }
+
+        // Reset comments container when binding to a new post
+        commentsContainer.visibility = View.GONE
 
         when (postType) {
             PostType.PROFILE -> {
