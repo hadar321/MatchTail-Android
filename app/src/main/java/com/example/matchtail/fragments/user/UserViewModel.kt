@@ -13,7 +13,11 @@ import kotlinx.coroutines.withContext
 class UserViewModel(private val userId: String) : ImageLoaderViewModel() {
     val posts = InflatedPostRepository.getInstance().getByUserId(userId)
     val username = MutableLiveData("")
-    val avatarUrl = MutableLiveData("")
+    val avatarUrl = MutableLiveData<String?>(null)
+    val role = MutableLiveData("")
+    val phone = MutableLiveData("")
+    val location = MutableLiveData("")
+    val description = MutableLiveData("")
 
     val isLoadingPosts = InflatedPostRepository.getInstance().getIsLoading()
     val isLoadingUser = MutableLiveData(false)
@@ -32,6 +36,10 @@ class UserViewModel(private val userId: String) : ImageLoaderViewModel() {
                 withContext(Dispatchers.Main) {
                     username.value = user.username
                     avatarUrl.value = user.avatarUrl
+                    role.value = user.role
+                    phone.value = user.phone
+                    location.value = user.location
+                    description.value = user.description ?: ""
                 }
             } catch (e: Exception) {
                 Log.e("User Page", "Error fetching user", e)

@@ -14,4 +14,25 @@
     <string name="save_changes">Save Changes</string>
     <string name="log_in">Log In</string>
     <string name="empty_content">Add Animal Information…</string>
+
+    <!-- New Strings -->
+    <string name="create_account">Create Account</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="location_city">Location (City)</string>
+    <string name="role_prompt">Are you looking to adopt or give?</string>
+    <string name="adopt_pet">Adopt Pet</string>
+    <string name="send_pet">Send Pet</string>
+    <string name="about_me">About Me</string>
+    <string name="about_me_optional">About Me (Optional)</string>
+    <string name="change_password_optional">Change Password (Optional)</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="profile_label">Profile</string>
+    <string name="posts_label">Posts</string>
+    <string name="success_update">User updated successfully</string>
+    <string name="invalid_input_title">Invalid Input</string>
+    <string name="fill_required_fields">Please fill all required fields correctly</string>
 </resources>

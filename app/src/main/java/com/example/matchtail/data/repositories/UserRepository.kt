@@ -41,7 +41,16 @@ class UserRepository : ImageLoader {
     private val authListeners: MutableList<AuthListener> = mutableListOf()
     private var isInUserCreation: Boolean = false
 
-    suspend fun create(email: String, password: String, username: String, avatarUri: String) {
+    suspend fun create(
+        email: String,
+        password: String,
+        username: String,
+        avatarUri: String?,
+        role: String,
+        phone: String,
+        location: String,
+        description: String?
+    ) {
         isInUserCreation = true
 
         createAuthUser(email, password)
@@ -49,11 +58,15 @@ class UserRepository : ImageLoader {
             id = getLoggedUserId() ?: throw Exception("User not logged in"),
             username = username,
             email = email,
-            avatarUrl = avatarUri
+            avatarUrl = avatarUri,
+            role = role,
+            phone = phone,
+            location = location,
+            description = description
         )
         save(user)
         val avatarUrl = user.avatarUrl
-        if (avatarUrl != null) saveImage(avatarUrl, user.id)
+        if (!avatarUrl.isNullOrEmpty()) saveImage(avatarUrl, user.id)
 
         isInUserCreation = false
 
@@ -62,7 +75,16 @@ class UserRepository : ImageLoader {
         }
     }
 
-    suspend fun update(oldPassword: String, password: String, username: String, avatarUri: String) {
+    suspend fun update(
+        oldPassword: String,
+        password: String,
+        username: String,
+        avatarUri: String?,
+        role: String,
+        phone: String,
+        location: String,
+        description: String?
+    ) {
         if (password.isNotEmpty()) {
             if (oldPassword.isEmpty()) {
                 throw AuthenticatorException("Old password is required")
@@ -77,12 +99,16 @@ class UserRepository : ImageLoader {
             id = getLoggedUserId() ?: throw Exception("User not logged in"),
             username = username,
             email = getLoggedUserEmail() ?: throw Exception("User not logged in"),
-            avatarUrl = if (!avatarUri.startsWith("file:///")) "file://${avatarUri}" else avatarUri
+            avatarUrl = if (avatarUri != null && !avatarUri.startsWith("file:///")) "file://${avatarUri}" else avatarUri,
+            role = role,
+            phone = phone,
+            location = location,
+            description = description
         )
 
         save(user)
         val userAvatarUrl = user.avatarUrl
-        if (userAvatarUrl != null) saveImage(userAvatarUrl, user.id)
+        if (!userAvatarUrl.isNullOrEmpty()) saveImage(userAvatarUrl, user.id)
     }
 
     private suspend fun save(user: User) {
@@ -91,6 +117,10 @@ class UserRepository : ImageLoader {
         db.runBatch { batch ->
             batch.set(documentRef, user)
             batch.update(documentRef, User.IMAGE_URI_KEY, user.avatarUrl)
+            batch.update(documentRef, User.ROLE_KEY, user.role)
+            batch.update(documentRef, User.PHONE_KEY, user.phone)
+            batch.update(documentRef, User.LOCATION_KEY, user.location)
+            batch.update(documentRef, User.DESCRIPTION_KEY, user.description)
             batch.update(documentRef, User.TIMESTAMP_KEY, FieldValue.serverTimestamp())
         }.await()
 
@@ -109,17 +139,17 @@ class UserRepository : ImageLoader {
                         User.fromJSON(it).apply { id = document.id }
                     }
                 }
-            user?.avatarUrl = imageRepository.downloadAndCacheImage(
-                imageRepository.getImageRemoteUri(userId),
-                userId
-            )
-
-            if (user == null) return null
-
-            AppLocalDB.getInstance().userDao().insertAll(user)
+            
+            if (user != null) {
+                user.avatarUrl = imageRepository.downloadAndCacheImage(
+                    imageRepository.getImageRemoteUri(userId),
+                    userId
+                )
+                AppLocalDB.getInstance().userDao().insertAll(user)
+            }
         }
 
-        return user.apply { avatarUrl = imageRepository.getImagePathById(userId) }
+        return user?.apply { avatarUrl = if (!avatarUrl.isNullOrEmpty()) imageRepository.getImagePathById(userId) else null }
     }
 
     override suspend fun getImagePath(imageId: String): String {
@@ -180,7 +210,7 @@ class UserRepository : ImageLoader {
         for (user in users) {
             if (user == null) continue
 
-            imageRepository.deleteLocal(user.id)
+            if (!user.avatarUrl.isNullOrEmpty()) imageRepository.deleteLocal(user.id)
             AppLocalDB.getInstance().userDao().insertAll(user)
             val lastUpdated = user.lastUpdated
             if (lastUpdated != null && lastUpdated > time) {

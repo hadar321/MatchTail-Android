@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.matchtail.R
 import com.example.matchtail.data.models.InflatedPost
@@ -18,6 +20,9 @@ import com.example.matchtail.utils.BaseAlert
 import com.example.matchtail.utils.ImageLoaderViewModel
 import com.google.firebase.Timestamp
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -40,6 +45,7 @@ class PostViewHolder(
     private var avatar: ImageView = itemView.findViewById(R.id.post_row_avatar)
     private var comment: Button = itemView.findViewById(R.id.post_row_comment_button)
     private var date: TextView = itemView.findViewById(R.id.date)
+    private var relevant: TextView = itemView.findViewById(R.id.post_row_relevant)
     private var progressBarAvatar: View = itemView.findViewById(R.id.progress_bar_avatar)
     private var progressBarRestaurant: View = itemView.findViewById(R.id.progress_bar_animal)
 
@@ -70,6 +76,18 @@ class PostViewHolder(
                                 editPostListener?.onClickListener(post)
                             }
 
+                            R.id.set_relevance -> {
+                                itemView.findViewTreeLifecycleOwner()?.lifecycleScope?.launch(Dispatchers.IO) {
+                                    try {
+                                        PostRepository.getInstance().updateRelevance(post.id, !post.isRelevant)
+                                    } catch (e: Exception) {
+                                        withContext(Dispatchers.Main) {
+                                            BaseAlert("Error", "Failed to update relevance", itemView.context).show()
+                                        }
+                                    }
+                                }
+                            }
+
                             R.id.delete_post -> {
                                 layout.alpha = 0.4f
                                 PostRepository.getInstance().delete(post.id) {
@@ -88,6 +106,8 @@ class PostViewHolder(
                     }
                 })
                 inflate(R.menu.post_menu)
+                val relevanceItem = menu.findItem(R.id.set_relevance)
+                relevanceItem?.title = if (post?.isRelevant == true) "Mark as Not Relevant" else "Mark as Relevant"
                 show()
             }
         }
@@ -109,13 +129,23 @@ class PostViewHolder(
             date.text = dateFormat.format(Timestamp(Date(lastUpdated)).toDate())
         }
 
+        if (post.isRelevant) {
+            relevant.visibility = View.VISIBLE
+            relevant.text = "STILL RELEVANT"
+            relevant.setTextColor(itemView.context.getColor(R.color.matchtail_green))
+        } else {
+            relevant.visibility = View.VISIBLE
+            relevant.text = "NOT RELEVANT"
+            relevant.setTextColor(itemView.context.getColor(R.color.gray))
+        }
+
         progressBarRestaurant.visibility = View.VISIBLE
         imageLoaderViewModel.getImageUrl(post.id, PostRepository.getInstance()) { path ->
             if (post.id == this.post?.id) {
                 if (path.isNotEmpty()) {
                     Picasso.get()
                         .load(File(path))
-                        .placeholder(R.drawable.paw) // Assuming paw is a placeholder
+                        .placeholder(R.drawable.paw) 
                         .into(animalImage, object : com.squareup.picasso.Callback {
                             override fun onSuccess() {
                                 progressBarRestaurant.visibility = View.GONE
@@ -155,8 +185,8 @@ class PostViewHolder(
             }
         }
 
-        val isMenuShown = post.userId == UserRepository.getInstance().getLoggedUserId()
-        if (isMenuShown) {
+        val isOwner = post.userId == UserRepository.getInstance().getLoggedUserId()
+        if (isOwner && postType == PostType.PROFILE) {
             menu.visibility = View.VISIBLE
         } else {
             menu.visibility = View.GONE

@@ -29,8 +29,7 @@ class InflatedPostRepository {
 
     fun getAll(): LiveData<List<InflatedPost>> {
         refresh()
-        val loggedUserId = UserRepository.getInstance().getLoggedUserId() ?: throw Exception("User not logged in")
-        return AppLocalDB.getInstance().inflatedPostDao().getAll(loggedUserId)
+        return AppLocalDB.getInstance().inflatedPostDao().getAll()
     }
 
     fun getByUserId(userId: String): LiveData<List<InflatedPost>> {

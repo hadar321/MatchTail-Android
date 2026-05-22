@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
@@ -38,14 +39,15 @@ class RegisterFragment : Fragment() {
         bindViews()
 
         binding?.registerButton?.setOnClickListener {
-            Log.d("BBBB","BBBB")
+            syncViewModel()
             showProgressBar()
             viewModel.register({ error -> onRegisterFailure(error) })
         }
 
         setupToolbar()
-
+        setupRoleGroup()
         setupUploadButton()
+        
         binding?.imageView?.requestStoragePermission(requireContext(), requireActivity())
 
         return binding?.root
@@ -54,6 +56,25 @@ class RegisterFragment : Fragment() {
     private fun bindViews() {
         binding?.viewModel = viewModel
         binding?.lifecycleOwner = viewLifecycleOwner
+    }
+
+    private fun syncViewModel() {
+        viewModel.name.value = binding?.name?.text
+        viewModel.email.value = binding?.email?.text
+        viewModel.phone.value = binding?.phone?.text
+        viewModel.location.value = binding?.location?.text
+        viewModel.description.value = binding?.description?.text
+        viewModel.password.value = binding?.password?.text
+        viewModel.confirmPassword.value = binding?.confirmPassword?.text
+    }
+
+    private fun setupRoleGroup() {
+        binding?.roleGroup?.setOnCheckedChangeListener { group, checkedId ->
+            val radioButton = group.findViewById<RadioButton>(checkedId)
+            if (radioButton != null) {
+                viewModel.role.value = radioButton.text.toString()
+            }
+        }
     }
 
     private fun onRegisterFailure(error: Exception?) {
@@ -68,13 +89,13 @@ class RegisterFragment : Fragment() {
                         requireContext()
                     ).show()
                 }
-
                 else -> {
-                    BaseAlert("Register Error", "An error occurred", requireContext()).show()
+                    BaseAlert("Register Error", error.message ?: "An error occurred", requireContext()).show()
                 }
             }
+        } else {
+             BaseAlert("Invalid Input", "Please fill all required fields correctly", requireContext()).show()
         }
-        Log.d("CCCCC", "CCCCC $error")
 
         showRegisterButton()
     }
@@ -91,12 +112,6 @@ class RegisterFragment : Fragment() {
     private fun setupUploadButton() {
         binding?.imageView?.setOnClickListener {
             imagePicker.launch("image/*")
-        }
-
-        viewModel.isAvatarUriValid.observe(viewLifecycleOwner) {
-            if (viewModel.isAvatarUriValid.value == false) {
-                BaseAlert("Invalid Input", "Please upload an image", requireContext()).show()
-            }
         }
     }
 

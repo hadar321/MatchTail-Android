@@ -19,6 +19,7 @@ class PostRepository : ImageLoader {
     companion object {
         private const val COLLECTION = "posts"
         private const val LAST_UPDATED = "postsLastUpdated"
+        private const val IS_RELEVANT_KEY = "isRelevant"
 
         private val postRepository = PostRepository()
 
@@ -39,15 +40,17 @@ class PostRepository : ImageLoader {
             db.collection(COLLECTION).document().also { post.id = it.id }
 
         db.runTransaction { transaction ->
-            transaction.set(documentRef, post)
-            transaction.update(documentRef, Post.IMAGE_URI_KEY, post.animalPictureUrl)
+            transaction.set(documentRef, post.toJSON())
             transaction.update(documentRef, Post.TIMESTAMP_KEY, FieldValue.serverTimestamp())
         }.await()
-        uploadImage(post.animalPictureUrl, post.id)
+        
+        if (post.animalPictureUrl.startsWith("file:///")) {
+            uploadImage(post.animalPictureUrl, post.id)
+        }
     }
 
-    private suspend fun uploadImage(imageUri: String, reviewId: String) {
-        imageRepository.upload(imageUri.toUri(), reviewId)
+    private suspend fun uploadImage(imageUri: String, postId: String) {
+        imageRepository.upload(imageUri.toUri(), postId)
     }
 
     suspend fun getById(postId: String): Post? {
@@ -63,17 +66,16 @@ class PostRepository : ImageLoader {
                     }
                 }
 
-            post?.animalPictureUrl = imageRepository.downloadAndCacheImage(
-                imageRepository.getImageRemoteUri(postId),
-                postId
-            )
-
-            if (post == null) return null
-
-            AppLocalDB.getInstance().postDao().insertAll(post)
+            if (post != null) {
+                post.animalPictureUrl = imageRepository.downloadAndCacheImage(
+                    imageRepository.getImageRemoteUri(postId),
+                    postId
+                )
+                AppLocalDB.getInstance().postDao().insertAll(post)
+            }
         }
 
-        return post.apply { animalPictureUrl = imageRepository.getImagePathById(postId) }
+        return post?.apply { animalPictureUrl = imageRepository.getImagePathById(postId) }
     }
 
     override suspend fun getImagePath(imageId: String): String {
@@ -116,7 +118,6 @@ class PostRepository : ImageLoader {
         executor.submit {
             runBlocking {
                 try {
-                    val post = getById(postId) ?: return@runBlocking
                     db.collection(COLLECTION).document(postId).delete().await()
                     AppLocalDB.getInstance().postDao().delete(postId)
                     imageRepository.delete(postId)
@@ -124,6 +125,15 @@ class PostRepository : ImageLoader {
                     onError()
                 }
             }
+        }
+    }
+
+    suspend fun updateRelevance(postId: String, isRelevant: Boolean) {
+        db.collection(COLLECTION).document(postId).update(IS_RELEVANT_KEY, isRelevant).await()
+        val post = getById(postId)
+        if (post != null) {
+            post.isRelevant = isRelevant
+            AppLocalDB.getInstance().postDao().insertAll(post)
         }
     }
 

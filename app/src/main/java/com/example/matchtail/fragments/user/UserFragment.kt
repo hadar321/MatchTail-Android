@@ -6,7 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.matchtail.R
+import com.example.matchtail.adapters.OnPostItemClickListener
+import com.example.matchtail.adapters.PaddedItemDecoration
+import com.example.matchtail.adapters.PostType
+import com.example.matchtail.adapters.PostsRecyclerAdapter
+import com.example.matchtail.data.models.InflatedPost
+import com.example.matchtail.data.repositories.UserRepository
 import com.example.matchtail.databinding.FragmentUserBinding
 import com.squareup.picasso.Picasso
 import java.io.File
@@ -20,9 +28,7 @@ interface OnCreateListener {
 class UserFragment : Fragment() {
     private var viewModel: UserViewModel? = null
     private var binding: FragmentUserBinding? = null
-
     private var onCreateListener: OnCreateListener? = null
-
     private var userId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,28 +75,48 @@ class UserFragment : Fragment() {
         binding = null
     }
 
-    private fun setupPostList() {// TODO: fetch post
+    private fun setupPostList() {
+        binding?.postsRecyclerView?.setHasFixedSize(true)
+        binding?.postsRecyclerView?.layoutManager = LinearLayoutManager(context)
+        binding?.postsRecyclerView?.addItemDecoration(PaddedItemDecoration())
+        
+        val vm = viewModel ?: return
+        val adapter = PostsRecyclerAdapter(emptyList(), vm)
+        
+        // Only enable edit/delete menu if this is the logged-in user's profile
+        if (userId == UserRepository.getInstance().getLoggedUserId()) {
+            adapter.postType = PostType.PROFILE
+            adapter.editPostListener = object : OnPostItemClickListener {
+                override fun onClickListener(post: InflatedPost) {
+                    val action = ProfileFragmentDirections.actionProfileFragmentToPostFormFragment(post.id)
+                    findNavController().navigate(action)
+                }
+            }
+        } else {
+            adapter.postType = PostType.REGULAR
+        }
+
+        binding?.postsRecyclerView?.adapter = adapter
+
+        vm.posts.observe(viewLifecycleOwner) { posts ->
+            adapter.updatePosts(posts)
+        }
     }
 
     private fun setupUser() {
-        viewModel?.username?.observe(viewLifecycleOwner) { username ->
-            binding?.profileUsername?.text = username
-        }
-
         viewModel?.avatarUrl?.observe(viewLifecycleOwner) { avatarUrl ->
             val avatar = binding?.profileAvatar
-            if (avatar != null && !avatarUrl.isNullOrEmpty()) {
-                val file = File(avatarUrl)
-                if (file.exists()) {
-                    Picasso.get()
-                        .load(file)
-                        .placeholder(R.drawable.avatar_image)
+            if (avatar != null) {
+                if (!avatarUrl.isNullOrEmpty()) {
+                    val file = File(avatarUrl)
+                    val picasso = Picasso.get()
+                    val request = if (file.exists()) picasso.load(file) else picasso.load(avatarUrl)
+                    
+                    request.placeholder(R.drawable.avatar_image)
+                        .error(R.drawable.avatar_image)
                         .into(avatar)
                 } else {
-                    Picasso.get()
-                        .load(avatarUrl)
-                        .placeholder(R.drawable.avatar_image)
-                        .into(avatar)
+                    avatar.setImageResource(R.drawable.avatar_image)
                 }
             }
         }

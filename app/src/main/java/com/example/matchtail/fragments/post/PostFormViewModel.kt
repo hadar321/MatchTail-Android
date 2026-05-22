@@ -18,6 +18,7 @@ class PostFormViewModel : ViewModel() {
     val selectedAnimal = MutableLiveData("")
     val content = MutableLiveData("")
     val imageUri = MutableLiveData("")
+    val isRelevant = MutableLiveData(true)
     var postId: String? = null
 
     val isContentValid = MutableLiveData(true)
@@ -41,6 +42,7 @@ class PostFormViewModel : ViewModel() {
                     selectedAnimal.value = post.animalId
                     content.value = post.content
                     imageUri.value = post.animalPictureUrl
+                    isRelevant.value = post.isRelevant
                 }
             } catch (e: Exception) {
                 Log.e("AddNewPost", "Error fetching post", e)
@@ -50,31 +52,47 @@ class PostFormViewModel : ViewModel() {
         }
     }
 
-    private suspend fun fetchAnimalList(): MutableList<String> {
+    private suspend fun fetchAnimalList(): List<String> {
         val animalList = mutableListOf<String>()
+        // Add generic breeds first
+        animalList.add("Dog")
+        animalList.add("Cat")
+        animalList.add("Bird")
+        animalList.add("Fish")
+        animalList.add("Rabbit")
+        animalList.add("Hamster")
 
-        AnimalAPIService.getAnimalList().message?.forEach { (key, values) ->
-            if (values.isNotEmpty()) {
-                values.forEach { value ->
-                    animalList.add("$value $key")
+        try {
+            AnimalAPIService.getAnimalList().message?.forEach { (key, values) ->
+                if (values.isNotEmpty()) {
+                    values.forEach { value ->
+                        animalList.add("$value $key")
+                    }
+                } else {
+                    animalList.add(key)
                 }
-            } else {
-                animalList.add(key)
             }
+        } catch (e: Exception) {
+            Log.e("PostFormViewModel", "Error fetching breeds from API", e)
         }
-        return animalList
+        return animalList.distinct()
     }
 
     fun initForm() {
         isLoading.value = true
+        this.postId = null
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val animalList = fetchAnimalList()
                 withContext(Dispatchers.Main) {
                     animalNames.value = animalList
+                    content.value = ""
+                    imageUri.value = ""
+                    selectedAnimal.value = ""
+                    isRelevant.value = true
                 }
             } catch (e: Exception) {
-                Log.e("AddNewReview", "Error fetching post", e)
+                Log.e("AddNewReview", "Error fetching animal list", e)
             } finally {
                 withContext(Dispatchers.Main) { isLoading.value = false }
             }
@@ -132,9 +150,9 @@ class PostFormViewModel : ViewModel() {
             userId = userId,
             animalId = animal,
             content = content,
-            animalPictureUrl = imageUri.let {
-                if (!it.startsWith("file:///")) "file://$it" else it
-            }
+            animalPictureUrl = imageUri,
+            isRelevant = isRelevant.value ?: true,
+            lastUpdated = System.currentTimeMillis()
         )
     }
 }

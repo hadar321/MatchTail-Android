@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
@@ -40,13 +41,15 @@ class EditUserFragment : Fragment() {
         bindViews()
 
         binding?.submitButton?.setOnClickListener {
-            showProgressBar()
+            syncViewModel()
             viewModel.submit({ onUpdateSuccess() }) { error -> onUpdateFailure(error) }
         }
 
         setupToolbar()
         setupLoading()
         setupUploadButton()
+        setupRoleGroup()
+        
         binding?.imageView?.requestStoragePermission(requireContext(), requireActivity())
 
         return binding?.root
@@ -57,8 +60,35 @@ class EditUserFragment : Fragment() {
         binding?.lifecycleOwner = viewLifecycleOwner
     }
 
+    private fun syncViewModel() {
+        viewModel.name.value = binding?.name?.text
+        viewModel.phone.value = binding?.phone?.text
+        viewModel.location.value = binding?.location?.text
+        viewModel.description.value = binding?.description?.text
+        viewModel.oldPassword.value = binding?.oldPassword?.text
+        viewModel.password.value = binding?.password?.text
+        viewModel.confirmPassword.value = binding?.confirmPassword?.text
+    }
+
+    private fun setupRoleGroup() {
+        binding?.roleGroup?.setOnCheckedChangeListener { group, checkedId ->
+            val radioButton = group.findViewById<RadioButton>(checkedId)
+            if (radioButton != null) {
+                viewModel.role.value = radioButton.text.toString()
+            }
+        }
+
+        viewModel.role.observe(viewLifecycleOwner) { role ->
+            if (role == getString(R.string.adopt_pet)) {
+                binding?.roleAdopter?.isChecked = true
+            } else if (role == getString(R.string.send_pet)) {
+                binding?.roleGiver?.isChecked = true
+            }
+        }
+    }
+
     private fun onUpdateSuccess() {
-        BaseAlert("Success", "User updated successfully", requireContext()).show()
+        BaseAlert("Success", getString(R.string.success_update), requireContext()).show()
         findNavController().popBackStack()
     }
 
@@ -69,15 +99,16 @@ class EditUserFragment : Fragment() {
                 is AuthenticatorException, is FirebaseAuthInvalidUserException, is FirebaseAuthInvalidCredentialsException -> {
                     BaseAlert(
                         "Edit Error",
-                        "Password is not correct",
+                        "Current password is not correct",
                         requireContext()
                     ).show()
                 }
-
                 else -> {
-                    BaseAlert("Edit Error", "An error occurred", requireContext()).show()
+                    BaseAlert("Edit Error", error.message ?: "An error occurred", requireContext()).show()
                 }
             }
+        } else {
+            BaseAlert(getString(R.string.invalid_input_title), getString(R.string.fill_required_fields), requireContext()).show()
         }
 
         showSubmitButton()
@@ -96,8 +127,10 @@ class EditUserFragment : Fragment() {
         binding?.imageView?.setOnClickListener {
             imagePicker.launch("image/*")
         }
-        viewModel.avatarUri.observe(viewLifecycleOwner) { uri ->
-            binding?.imageView?.setImageURI(uri.toUri())
+        viewModel.avatarUri.observe(viewLifecycleOwner) { uriString ->
+            if (!uriString.isNullOrEmpty()) {
+                binding?.imageView?.setImageURI(uriString.toUri())
+            }
         }
     }
 

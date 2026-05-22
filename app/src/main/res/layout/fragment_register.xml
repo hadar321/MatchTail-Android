@@ -5,7 +5,6 @@
     tools:context=".fragments.register.RegisterFragment">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.example.matchtail.fragments.register.RegisterViewModel" />
@@ -14,163 +13,185 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:ignore="ScrollViewSize">
+        android:background="#F8F9FA">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/login_toolbar"
+            android:id="@+id/loginToolbar"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/bottom_nav_color"
-            android:minHeight="?android:attr/actionBarSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/matchtail_green"
             app:layout_constraintTop_toTopOf="parent"
-            app:theme="@style/ThemeOverlay.Material3.ActionBar">
+            app:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
             <TextView
-                android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="MatchTail"
+                android:text="@string/app_name"
                 android:textColor="@color/white"
-                android:textSize="30sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
-
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/scroll_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:fillViewport="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/login_toolbar">
+            app:layout_constraintTop_toBottomOf="@id/loginToolbar">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:ignore="ScrollViewSize">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <TextView
-                    android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="24dp"
                     android:gravity="center"
-                    android:text="Register"
+                    android:text="@string/create_account"
                     android:textColor="@color/black"
-                    android:textSize="50sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@id/register_inputs"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
 
-                <LinearLayout
-                    android:id="@+id/register_inputs"
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toTopOf="@id/progress_bar"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/title">
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp">
 
-                    <EditText
-                        android:id="@+id/name"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="64dp"
-                        android:layout_marginEnd="64dp"
-                        android:autofillHints="true"
-                        android:ems="10"
-                        android:hint="Name"
-                        android:text="@={viewModel.name}"
-                        />
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
-                    <EditText
-                        android:id="@+id/email"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="64dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginEnd="64dp"
-                        android:ems="10"
-                        android:hint="Email"
-                        android:inputType="textEmailAddress"
-                        android:text="@={viewModel.email}"
-                        />
+                        <com.example.matchtail.views.ImagePicker
+                            android:id="@+id/imageView"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="24dp"
+                            android:src="@drawable/avatar_image" />
 
-                    <EditText
-                        android:id="@+id/password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="64dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginEnd="64dp"
-                        android:ems="10"
-                        android:hint="Password"
-                        android:inputType="textPassword"
-                        android:text="@={viewModel.password}"
-                        />
+                        <com.example.matchtail.views.EditTextInput
+                            android:id="@+id/name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:hint="@string/full_name"
+                            android:inputType="textPersonName" />
 
-                    <EditText
-                        android:id="@+id/confirm_password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="64dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginEnd="64dp"
-                        android:ems="10"
-                        android:hint="Confirm Password"
-                        android:inputType="textPassword"
-                        android:text="@={viewModel.confirmPassword}"/>
+                        <com.example.matchtail.views.EditTextInput
+                            android:id="@+id/email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:hint="@string/email_text"
+                            android:inputType="textEmailAddress" />
 
-                    <com.example.matchtail.views.ImagePicker
-                        android:id="@+id/image_view"
-                        android:layout_width="150sp"
-                        android:layout_height="150sp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="20dp"
-                        android:contentDescription="Upload Image"
-                        android:src="@drawable/add_picture"
-                        tools:ignore="HardcodedText" />
+                        <com.example.matchtail.views.EditTextInput
+                            android:id="@+id/phone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:hint="@string/phone_number"
+                            android:inputType="phone" />
 
-                </LinearLayout>
+                        <com.example.matchtail.views.EditTextInput
+                            android:id="@+id/location"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:hint="@string/location_city" />
 
-                <android.widget.Button
-                    android:id="@+id/register_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="4dp"
-                    android:paddingStart="30dp"
-                    android:paddingEnd="30dp"
-                    android:text="Sign Up"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/register_inputs" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/role_prompt"
+                            android:layout_marginBottom="8dp"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
 
-                <com.google.android.material.progressindicator.CircularProgressIndicator
-                    android:id="@+id/progress_bar"
-                    style="@style/Widget.MaterialComponents.CircularProgressIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:indeterminate="true"
-                    android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/register_inputs" />
+                        <RadioGroup
+                            android:id="@+id/roleGroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="16dp">
+                            <RadioButton
+                                android:id="@+id/roleAdopter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/adopt_pet"
+                                android:layout_weight="1"/>
+                            <RadioButton
+                                android:id="@+id/roleGiver"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/send_pet"
+                                android:layout_weight="1"/>
+                        </RadioGroup>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                        <com.example.matchtail.views.EditTextInput
+                            android:id="@+id/description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            android:hint="@string/about_me_optional"
+                            android:lines="3" />
 
+                        <com.example.matchtail.views.EditTextInput
+                            android:id="@+id/password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:hint="@string/password_text"
+                            android:inputType="textPassword" />
+
+                        <com.example.matchtail.views.EditTextInput
+                            android:id="@+id/confirmPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="24dp"
+                            android:hint="@string/confirm_password_text"
+                            android:inputType="textPassword" />
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <Button
+                                android:id="@+id/registerButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:backgroundTint="@color/matchtail_green"
+                                android:text="@string/sign_up"
+                                android:textAllCaps="false"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                app:cornerRadius="8dp" />
+
+                            <com.google.android.material.progressindicator.CircularProgressIndicator
+                                android:id="@+id/progressBar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:indeterminate="true"
+                                android:visibility="invisible" />
+                        </FrameLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"/>
+
+            </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
