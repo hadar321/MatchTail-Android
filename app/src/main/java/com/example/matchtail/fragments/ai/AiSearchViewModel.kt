@@ -2,6 +2,7 @@ package com.example.matchtail.fragments.ai
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.matchtail.data.models.InflatedPost
@@ -14,16 +15,29 @@ class AiSearchViewModel : ViewModel() {
     val isLoading = MutableLiveData<Boolean>()
 
     fun searchPosts(query: String) {
-        val allPosts = InflatedPostRepository.getInstance().getAll().value
-        Log.d("AiSearchViewModel", "Search initiated for: $query. Posts count: ${allPosts?.size}")
-        
-        if (allPosts.isNullOrEmpty()) {
-            Log.d("AiSearchViewModel", "No posts found to search in.")
-            searchResults.value = emptyList()
-            return
-        }
-        
         isLoading.value = true
+        val postsLiveData = InflatedPostRepository.getInstance().getAll()
+        
+        val observer = object : Observer<List<InflatedPost>?> {
+            override fun onChanged(allPosts: List<InflatedPost>?) {
+                postsLiveData.removeObserver(this)
+                
+                Log.d("AiSearchViewModel", "Search initiated for: $query. Posts count: ${allPosts?.size}")
+                
+                if (allPosts.isNullOrEmpty()) {
+                    Log.d("AiSearchViewModel", "No posts found to search in.")
+                    searchResults.value = emptyList()
+                    isLoading.value = false
+                    return
+                }
+                
+                performAiSearch(query, allPosts)
+            }
+        }
+        postsLiveData.observeForever(observer)
+    }
+
+    private fun performAiSearch(query: String, allPosts: List<InflatedPost>) {
         viewModelScope.launch {
             val postContext = allPosts.joinToString("\n") { 
                 "Post ID: ${it.id}, Content: ${it.content}, Interests: ${it.interests.joinToString()}" 
