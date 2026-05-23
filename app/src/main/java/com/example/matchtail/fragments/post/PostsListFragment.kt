@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.matchtail.NavGraphDirections
 import com.example.matchtail.R
 import com.example.matchtail.adapters.OnPostItemClickListener
 import com.example.matchtail.adapters.PaddedItemDecoration
@@ -64,7 +65,7 @@ class PostsListFragment : Fragment() {
         adapter.userListener = object : OnPostItemClickListener {
             override fun onClickListener(post: InflatedPost) {
                 val action =
-                    PostsListFragmentDirections.actionGlobalUserPageFragment(post.userId)
+                    NavGraphDirections.actionGlobalUserPageFragment(post.userId)
                 findNavController().navigate(action)
             }
         }

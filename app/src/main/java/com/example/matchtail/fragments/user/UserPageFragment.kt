@@ -17,13 +17,16 @@ class UserPageFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_user_page, container, false)
 
         val user = UserPageFragmentArgs.fromBundle(requireArguments())
-        val fragment = UserFragment.newInstance(user.userId)
+        // Initialize UserFragment as read-only for visiting other user profiles
+        val fragment = UserFragment.newInstance(user.userId, true)
         fragment.setOnCreate(object : OnCreateListener {
             override fun onCreate(binding: FragmentUserBinding?) {
                 binding?.profileToolbar?.setNavigationIcon(R.drawable.arrow_back)
                 binding?.profileToolbar?.setNavigationOnClickListener {
                     findNavController().popBackStack()
                 }
+                // Ensure menu is not inflated for visitor view
+                binding?.profileToolbar?.menu?.clear()
             }
         })
         getChildFragmentManager().beginTransaction()

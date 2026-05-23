@@ -3,14 +3,14 @@ package com.example.matchtail.fragments.ai
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.matchtail.data.models.InflatedPost
 import com.example.matchtail.data.repositories.InflatedPostRepository
 import com.example.matchtail.data.services.GeminiService
+import com.example.matchtail.utils.ImageLoaderViewModel
 import kotlinx.coroutines.launch
 
-class AiSearchViewModel : ViewModel() {
+class AiSearchViewModel : ImageLoaderViewModel() {
     val searchResults = MutableLiveData<List<InflatedPost>>()
     val isLoading = MutableLiveData<Boolean>()
 

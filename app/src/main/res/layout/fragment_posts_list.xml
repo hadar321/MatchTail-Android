@@ -17,22 +17,20 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/posts_list_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/matchtail_green"
-            android:minHeight="?android:attr/actionBarSize"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/matchtail_dark_green"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:theme="@style/ThemeOverlay.Material3.ActionBar">
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/app_name"
+                android:text="MatchTail"
                 android:textColor="@color/white"
-                android:textSize="30sp"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
         </androidx.appcompat.widget.Toolbar>
@@ -48,12 +46,8 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/posts_recycler_view"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="1dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

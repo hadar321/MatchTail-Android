@@ -1,5 +1,6 @@
 package com.example.matchtail.adapters
 
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -8,20 +9,25 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.matchtail.NavGraphDirections
 import com.example.matchtail.R
+import com.example.matchtail.data.local.AppLocalDB
 import com.example.matchtail.data.models.Comment
 import com.example.matchtail.data.models.InflatedPost
 import com.example.matchtail.data.repositories.CommentRepository
 import com.example.matchtail.data.repositories.InflatedCommentRepository
 import com.example.matchtail.data.repositories.PostRepository
 import com.example.matchtail.data.repositories.UserRepository
+import com.example.matchtail.fragments.post.InterestsAdapter
 import com.example.matchtail.fragments.post.comments.CommentsAdapter
 import com.example.matchtail.utils.BaseAlert
 import com.example.matchtail.utils.ImageLoaderViewModel
@@ -72,11 +78,17 @@ class PostViewHolder(
     init {
         username.setOnClickListener {
             val post = post
-            if (post != null) userListener?.onClickListener(post)
+            if (post != null) {
+                val action = NavGraphDirections.actionGlobalUserPageFragment(post.userId)
+                itemView.findNavController().navigate(action)
+            }
         }
         avatar.setOnClickListener {
             val post = post
-            if (post != null) userListener?.onClickListener(post)
+            if (post != null) {
+                val action = NavGraphDirections.actionGlobalUserPageFragment(post.userId)
+                itemView.findNavController().navigate(action)
+            }
         }
         animal.setOnClickListener {
             val post = post
@@ -85,16 +97,12 @@ class PostViewHolder(
 
         interestButton.setOnClickListener {
             val post = post ?: return@setOnClickListener
-            val userId = UserRepository.getInstance().getLoggedUserId() ?: return@setOnClickListener
-            itemView.findViewTreeLifecycleOwner()?.lifecycleScope?.launch(Dispatchers.IO) {
-                try {
-                    PostRepository.getInstance().toggleInterest(post.id, userId)
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        BaseAlert("Error", "Failed to update interest", itemView.context).show()
-                    }
-                }
-            }
+            showInterestsDialog(post)
+        }
+
+        interestsCount.setOnClickListener {
+            val post = post ?: return@setOnClickListener
+            showInterestsDialog(post)
         }
 
         commentButton.setOnClickListener {
@@ -178,6 +186,55 @@ class PostViewHolder(
                 show()
             }
         }
+    }
+
+    private fun toggleInterest(post: InflatedPost) {
+        val userId = UserRepository.getInstance().getLoggedUserId() ?: return
+        itemView.findViewTreeLifecycleOwner()?.lifecycleScope?.launch(Dispatchers.IO) {
+            try {
+                PostRepository.getInstance().toggleInterest(post.id, userId)
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    BaseAlert("Error", "Failed to update interest", itemView.context).show()
+                }
+            }
+        }
+    }
+
+    private fun showInterestsDialog(post: InflatedPost) {
+        val context = itemView.context
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_interests, null)
+        val recycler = dialogView.findViewById<RecyclerView>(R.id.interests_recycler_view)
+        val toggleBtn = dialogView.findViewById<Button>(R.id.btn_toggle_interest)
+        
+        val dialog = AlertDialog.Builder(context)
+            .setView(dialogView)
+            .create()
+
+        val adapter = InterestsAdapter(emptyList()) { userId ->
+            val action = NavGraphDirections.actionGlobalUserPageFragment(userId)
+            itemView.findNavController().navigate(action)
+            dialog.dismiss()
+        }
+        recycler.layoutManager = LinearLayoutManager(context)
+        recycler.adapter = adapter
+
+        val userId = UserRepository.getInstance().getLoggedUserId()
+        val isInterested = userId != null && post.interests.contains(userId)
+        toggleBtn.text = if (isInterested) "Remove Interest" else "I'm Interested"
+        toggleBtn.setOnClickListener {
+            toggleInterest(post)
+            dialog.dismiss()
+        }
+
+        val lifecycleOwner = itemView.findViewTreeLifecycleOwner()
+        if (lifecycleOwner != null && post.interests.isNotEmpty()) {
+            AppLocalDB.getInstance().userDao().getByIds(post.interests).observe(lifecycleOwner) { users ->
+                adapter.updateUsers(users)
+            }
+        }
+
+        dialog.show()
     }
 
     private fun setupCommentsList() {

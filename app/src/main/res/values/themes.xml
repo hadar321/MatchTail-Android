@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Use Theme.AppCompat.Light.NoActionBar or a MaterialComponents variant to support AppCompatActivity -->
-    <style name="Theme.MatchTail" parent="Theme.AppCompat.Light.NoActionBar" />
+    <!-- Use a MaterialComponents parent to support Material UI components -->
+    <style name="Theme.MatchTail" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Main brand color. -->
+        <item name="colorPrimary">@color/matchtail_dark_green</item>
+        <item name="colorPrimaryVariant">@color/matchtail_green</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/matchtail_green</item>
+        <item name="colorSecondaryVariant">@color/matchtail_dark_green</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+    </style>
 </resources>

@@ -20,6 +20,7 @@ import com.squareup.picasso.Picasso
 import java.io.File
 
 private const val USER_ID = "user_ID"
+private const val READ_ONLY = "read_only"
 
 interface OnCreateListener {
     fun onCreate(binding: FragmentUserBinding?)
@@ -30,11 +31,13 @@ class UserFragment : Fragment() {
     private var binding: FragmentUserBinding? = null
     private var onCreateListener: OnCreateListener? = null
     private var userId: String? = null
+    private var readOnly: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             userId = it.getString(USER_ID)
+            readOnly = it.getBoolean(READ_ONLY, false)
         }
     }
 
@@ -83,8 +86,8 @@ class UserFragment : Fragment() {
         val vm = viewModel ?: return
         val adapter = PostsRecyclerAdapter(emptyList(), vm)
         
-        // Only enable edit/delete menu if this is the logged-in user's profile
-        if (userId == UserRepository.getInstance().getLoggedUserId()) {
+        // Only enable edit/delete menu if this is the logged-in user's profile AND not read-only
+        if (!readOnly && userId == UserRepository.getInstance().getLoggedUserId()) {
             adapter.postType = PostType.PROFILE
             adapter.editPostListener = object : OnPostItemClickListener {
                 override fun onClickListener(post: InflatedPost) {
@@ -127,10 +130,11 @@ class UserFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(userId: String) =
+        fun newInstance(userId: String, readOnly: Boolean = false) =
             UserFragment().apply {
                 arguments = Bundle().apply {
                     putString(USER_ID, userId)
+                    putBoolean(READ_ONLY, readOnly)
                 }
             }
     }

@@ -18,6 +18,9 @@ interface UserDAO {
     @Query("SELECT * FROM users WHERE id = :userId")
     fun getById(userId: String): User?
 
+    @Query("SELECT * FROM users WHERE id IN (:userIds)")
+    fun getByIds(userIds: List<String>): LiveData<List<User>>
+
     @Query("SELECT * FROM users " +
             "WHERE username LIKE '%' || :searchString || '%' " +
             "ORDER BY lastUpdated DESC")

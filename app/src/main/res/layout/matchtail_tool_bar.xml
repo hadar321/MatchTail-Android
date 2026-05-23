@@ -3,14 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/app_toolbar"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="?android:attr/actionBarSize"
     android:background="@color/matchtail_green"
-    android:minHeight="?android:attr/actionBarSize"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="1.0"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+    app:theme="@style/ThemeOverlay.MaterialComponents.ActionBar">
 
     <TextView
         android:id="@+id/toolbar_title"
@@ -21,8 +16,6 @@
         android:shadowDy="2"
         android:text="MatchTail"
         android:textColor="@color/white"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@id/app_toolbar"
-        app:layout_constraintTop_toTopOf="@id/app_toolbar" />
+        android:textSize="24sp"
+        android:textStyle="bold" />
 </androidx.appcompat.widget.Toolbar>
