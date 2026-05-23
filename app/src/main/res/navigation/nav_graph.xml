@@ -68,6 +68,10 @@
             android:name="postId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/aiSearchFragment"
+        android:name="com.example.matchtail.fragments.ai.AiSearchFragment"
+        android:label="fragment_ai_search" />
     <action
         android:id="@+id/action_global_userPageFragment"
         app:destination="@id/userPageFragment"
@@ -75,4 +79,7 @@
     <action
         android:id="@+id/action_global_commentsFragment"
         app:destination="@id/commentsFragment" />
+    <action
+        android:id="@+id/action_global_aiSearchFragment"
+        app:destination="@id/aiSearchFragment" />
 </navigation>

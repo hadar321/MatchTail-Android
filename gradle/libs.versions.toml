@@ -20,6 +20,7 @@ swiperefreshlayout = "1.1.0"
 activity = "1.10.0"
 constraintlayout = "2.2.0"
 picasso = "2.71828"
+generativeai = "0.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -58,6 +59,7 @@ ucrop = { group = "com.github.yalantis", name = "ucrop", version.ref = "ucrop" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 picasso = { group = "com.squareup.picasso", name = "picasso", version.ref = "picasso" }
+google-ai-client = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "generativeai" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
