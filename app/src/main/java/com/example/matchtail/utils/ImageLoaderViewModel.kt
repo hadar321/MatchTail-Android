@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-abstract class ImageLoaderViewModel : ViewModel() {
+open class ImageLoaderViewModel : ViewModel() {
     fun getImageUrl(imageId: String, imageLoader: ImageLoader, onCompleted: (imageUrl: String) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val imageUrl = imageLoader.getImagePath(imageId)
