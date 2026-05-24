@@ -8,7 +8,7 @@
         tools:ignore="HardcodedText" />
     <item
         android:id="@id/aiSearchFragment"
-        android:icon="@drawable/paw"
+        android:icon="@drawable/ic_search"
         android:title="AI Search"
         tools:ignore="HardcodedText" />
     <item

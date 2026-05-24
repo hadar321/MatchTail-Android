@@ -30,9 +30,10 @@ class AiSearchFragment : Fragment(R.layout.fragment_ai_search) {
         binding.postsRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.postsRecyclerView.adapter = adapter
 
-        adapter.restaurantListener = object : OnPostItemClickListener {
+        adapter.userListener = object : OnPostItemClickListener {
             override fun onClickListener(post: InflatedPost) {
-                // Navigate to post details if needed
+                val action = AiSearchFragmentDirections.actionGlobalUserPageFragment(post.userId)
+                findNavController().navigate(action)
             }
         }
 
@@ -45,15 +46,17 @@ class AiSearchFragment : Fragment(R.layout.fragment_ai_search) {
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.btnSearch.isEnabled = !isLoading
         }
 
         viewModel.searchResults.observe(viewLifecycleOwner) { posts ->
             adapter.updatePosts(posts)
+            binding.noResultsView.visibility = if (posts.isEmpty() && binding.searchQuery.text.isNotEmpty()) View.VISIBLE else View.GONE
         }
 
-        // Keep local database posts synchronized so value isn't empty on search
+        // Keep local database posts synchronized
         InflatedPostRepository.getInstance().getAll().observe(viewLifecycleOwner) {
-            // Keep DB observer active to load posts
+            // Keep DB observer active
         }
     }
 
